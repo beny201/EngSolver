@@ -1,23 +1,43 @@
 {% extends "base.html" %}
 
 
-
 {% block content %}
-    <h1>Hello</h1>
-    <p>This page is to help engineers in their daily tasks.</p>
-    <p>For now there are available:</p>
+<h1>Hello</h1>
+<p>This page is to help engineers in their daily tasks.</p>
+<p>For now there are available:</p>
 
-    <!-- Lista z opisem podstrony i linkiem -->
-    <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;">
 
-    <a href="{% url 'corner_distance' %}" type="submit" class="btn btn-secondary"><span
+<div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;">
+
+    <a href="{% url 'corner_distance' %}" type="submit"
+       class="btn btn-secondary"><span
             class="bi bi-box-arrow-down"></span> Corner Distance
     </a>
-    <p style="margin-left: 10px;">To jest opis szarego przycisku.</p>
-        <button type="submit" class="btn btn-secondary"><span
-            class="bi-search"></span> Search
-    </button>
-    <p style="margin-left: 10px;">To jest opis szarego przycisku.</p>
-    </div>
+    <p style="margin-left: 10px;">'Corner distance' is a module for checking
+        the minimum distance to the edge of structural connections in the
+        corners of frame structures. The module takes into account factors such
+        as the type of bolts and the thickness of the plate in the connection,
+        verifying whether there is sufficient space for on-site
+        installation.</p>
+
+    <a href="{% url 'ridge_distance' %}" type="submit"
+       class="btn btn-secondary"><span
+            class="bi bi-box-arrow-down"></span> Ridge Distance
+    </a>
+    <p style="margin-left: 10px;">'Ridge distance' is a module for checking
+        the minimum distance to the edge of structural connections in the
+        ridge of frame structures. The module takes into account factors such
+        as the type of bolts and the thickness of the plate in the connection,
+        verifying whether there is sufficient space for on-site
+        installation.</p>
+
+    <a href="{% url 'ridge_distance' %}" type="submit"
+       class="btn btn-secondary"><span
+            class="bi bi-box-arrow-down"></span> Bracing
+    </a>
+    <p style="margin-left: 10px;">'Bracing' is a module that helps calculate
+        and estimate the lightest CFRHS (Circular Formed Rectangular Hollow
+        Sections) with limitations on deflection for various forces.</p>
+</div>
 
 {% endblock %}
