@@ -2,11 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Corner distance
+    {{ title }}
 {% endblock %}
 
 {% block content %}
-    <h1>Corner checker</h1>
+    <h1>{{ connection_type }}</h1>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}

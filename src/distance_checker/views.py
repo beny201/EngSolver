@@ -19,10 +19,19 @@ class BasicView(View):
         return render(request, template_name=self.template_name)
 
 
-
 class DistanceView(FormView):
-    template_name = "distance_checker/frame_corner.html"
+    template_name = "distance_checker/frame_connection.html"
     form_class = CornerForm
+
+    title = "Corner distance"
+    connection_type = "Corner checker"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.title
+        context['connection_type'] = self.connection_type
+
+        return context
 
     def _get_searched_assembly_parts(self, bolt_grade_value,
                                      bolt_diameter_value,
@@ -85,7 +94,10 @@ class DistanceView(FormView):
             image_data = creating_graph(*lines)
             context = {'form': form, "image_data": image_data,
                        "distance_from_bottom": round(distance_from_bottom, 0),
-                       "distance_from_top": round(distance_from_top, 0)}
+                       "distance_from_top": round(distance_from_top, 0),
+                       'title': self.title,
+                       'connection_type': self.connection_type
+                       }
 
             if "save_to_pdf" == self.request.POST.get("save_pdf", ""):
                 current_date = datetime.now()
@@ -93,7 +105,7 @@ class DistanceView(FormView):
                     "%d-%m-%Y %H:%M")
                 data = {
                     'title': "Corner connection",
-                    'date':formatted_datetime,
+                    'date': formatted_datetime,
                     'girder_angle_value': girder_angle_value,
                     'girder_height_value': girder_height_value,
                     't_flange_girder_value': t_flange_girder_value,
