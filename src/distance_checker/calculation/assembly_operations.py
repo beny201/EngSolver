@@ -25,7 +25,7 @@ class FindingBolt:
         return 10
 
     def searching_assembly_parts(self, bolt_grade: str, bolt_diameter: int,
-                        thickness_plate: float) -> [Bolt, Washer]:
+                                 thickness_plate: float) -> [Bolt, Washer]:
 
         thread_end = self.finding_thread_end(bolt_diameter)
 
@@ -65,7 +65,6 @@ class FindingBolt:
 
 class ThicknessPartsAssembly:
 
-
     @staticmethod
     def space_for_screw(used_bolt: Bolt, thickness_plate: int) -> int:
         space = used_bolt.length - 2 * thickness_plate
@@ -76,3 +75,8 @@ class ThicknessPartsAssembly:
     def total_length_bolt(used_bolt: Bolt) -> float:
         total_length_bolt = used_bolt.length + used_bolt.thickness_bolt_head
         return total_length_bolt
+
+    @staticmethod
+    def adding_w_bolt_head(used_bolt: Bolt, distance: float) -> float:
+        distance_with_head = used_bolt.thickness_bolt_head / 2 + distance
+        return distance_with_head
