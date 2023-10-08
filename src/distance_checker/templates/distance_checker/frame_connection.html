@@ -33,7 +33,7 @@
     </div>
 
     <div>
-        {% if image_data %}
+        {% if image_data and distance_from_bottom%}
             <div class="card" style="width: 20rem;">
                 <ul class="list-group">
                     <li class="list-group-item "> Distance when mounting from
@@ -43,6 +43,26 @@
                     <li class="list-group-item"> Distance when mounting from
                         bottom:
                         {{ distance_from_bottom }} mm
+                    </li>
+                </ul>
+            </div>
+
+            <br>
+            <img class="img-fluid rounded "
+                 src="data:image/png;base64,{{ image_data }}"
+                 alt="Connection graph">
+
+        {% elif image_data and distance_from_left %}
+
+                    <div class="card" style="width: 19rem;">
+                <ul class="list-group">
+                    <li class="list-group-item "> Distance when mounting from
+                        left:
+                        {{ distance_from_left }} mm
+                    </li>
+                    <li class="list-group-item"> Distance when mounting from
+                        right:
+                        {{ distance_from_right }} mm
                     </li>
                 </ul>
             </div>

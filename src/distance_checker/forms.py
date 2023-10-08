@@ -54,14 +54,14 @@ class CornerForm(forms.Form):
 
 class RidgeForm(forms.Form):
     left_girder_angle = forms.FloatField(
-        label="Girder angle [degree]",
+        label="Left girder angle [degree]",
         min_value=1,
         max_value=89,
         initial=14.5
     )
 
     right_girder_angle = forms.FloatField(
-        label="Girder angle [degree]",
+        label="Right girder angle [degree]",
         min_value=1,
         max_value=89,
         initial=14.5
@@ -74,14 +74,14 @@ class RidgeForm(forms.Form):
         initial=400
     )
     left_t_flange_girder = forms.IntegerField(
-        label="Thickness of flange in girder [mm]",
+        label="Thickness of left flange in girder [mm]",
         min_value=1,
         max_value=120,
         initial=20
     )
 
     right_t_flange_girder = forms.IntegerField(
-        label="Thickness of flange in girder [mm]",
+        label="Thickness of right flange in girder [mm]",
         min_value=1,
         max_value=120,
         initial=20
