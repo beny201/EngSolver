@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'bootstrap5',
     'crispy_forms',
     "crispy_bootstrap5",
+    'user',
 
 ]
 
@@ -156,3 +157,5 @@ MESSAGE_TAGS = {
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger',
  }
+
+LOGIN_REDIRECT_URL = 'index'
