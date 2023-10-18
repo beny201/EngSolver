@@ -1,22 +1,21 @@
 from datetime import datetime
 
-from django.shortcuts import render
-from django.views import View
-
-from .forms import CornerForm, RidgeForm
-
-from . import calculation
-from .utils import creating_graph
-from django.views.generic import FormView
 from django.contrib import messages
-from .utils import render_to_pdf
+from django.shortcuts import render
+from django.views.generic import FormView, TemplateView
+
+from .calculation import (
+    CreatingCorner,
+    CreatingRidge,
+    FindingBolt,
+    ThicknessPartsAssembly,
+)
+from .forms import CornerForm, RidgeForm
+from .utils import creating_graph, render_to_pdf
 
 
-class BasicView(View):
+class BasicView(TemplateView):
     template_name = 'distance_checker/index.html'
-
-    def get(self, request):
-        return render(request, template_name=self.template_name)
 
 
 class DistanceCornerView(FormView):
@@ -30,18 +29,15 @@ class DistanceCornerView(FormView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
         context['connection_type'] = self.connection_type
-
         return context
 
-    def _get_searched_assembly_parts(self, bolt_grade_value,
-                                     bolt_diameter_value,
-                                     t_plate_connection_value):
-
-        bolt = calculation.FindingBolt()
+    def _get_searched_assembly_parts(
+        self, bolt_grade_value, bolt_diameter_value, t_plate_connection_value
+    ):
+        bolt = FindingBolt()
         searched_bolt, searched_washer = bolt.searching_assembly_parts(
-            bolt_grade_value,
-            bolt_diameter_value,
-            t_plate_connection_value)
+            bolt_grade_value, bolt_diameter_value, t_plate_connection_value
+        )
 
         return searched_bolt, searched_washer
 
@@ -52,8 +48,7 @@ class DistanceCornerView(FormView):
         t_flange_girder_value = cleaned_data['t_flange_girder']
         column_width_value = cleaned_data['column_width']
         t_flange_column_value = cleaned_data['t_flange_column']
-        t_plate_connection_value = (cleaned_data[
-            't_plate_connection'])
+        t_plate_connection_value = cleaned_data['t_plate_connection']
         bolt_grade_value = cleaned_data['bolt_grade']
         bolt_diameter_value = cleaned_data['bolt_diameter']
 
@@ -63,17 +58,16 @@ class DistanceCornerView(FormView):
             bolt_grade_value, bolt_diameter_value, t_plate_connection_value
         )
 
-        assembly_part = calculation.ThicknessPartsAssembly()
+        assembly_part = ThicknessPartsAssembly()
 
-        total_length_bolt_value = assembly_part.total_length_bolt(
-            searched_bolt)
+        total_length_bolt_value = assembly_part.total_length_bolt(searched_bolt)
 
         thickness_washer_value = searched_washer.thickness_washer
 
         space_for_screw_value = assembly_part.space_for_screw(
-            searched_bolt, t_plate_connection_value)
-
-        corner = calculation.CreatingCorner()
+            searched_bolt, t_plate_connection_value
+        )
+        corner = CreatingCorner()
 
         try:
             lines, searched_distance = corner.creating_lines(
@@ -92,24 +86,26 @@ class DistanceCornerView(FormView):
             raw_distance_from_bottom, raw_distance_from_top = searched_distance
 
             distance_from_bottom = assembly_part.adding_w_bolt_head(
-                searched_bolt,
-                raw_distance_from_bottom)
+                searched_bolt, raw_distance_from_bottom
+            )
 
-            distance_from_top = assembly_part.adding_w_bolt_head(searched_bolt,
-                                                                 raw_distance_from_top)
+            distance_from_top = assembly_part.adding_w_bolt_head(
+                searched_bolt, raw_distance_from_top
+            )
 
             image_data = creating_graph(*lines)
-            context = {'form': form, "image_data": image_data,
-                       "distance_from_bottom": round(distance_from_bottom, 0),
-                       "distance_from_top": round(distance_from_top, 0),
-                       'title': self.title,
-                       'connection_type': self.connection_type
-                       }
+            context = {
+                'form': form,
+                "image_data": image_data,
+                "distance_from_bottom": round(distance_from_bottom, 0),
+                "distance_from_top": round(distance_from_top, 0),
+                'title': self.title,
+                'connection_type': self.connection_type,
+            }
 
             if "save_to_pdf" == self.request.POST.get("save_pdf", ""):
                 current_date = datetime.now()
-                formatted_datetime = current_date.strftime(
-                    "%d-%m-%Y %H:%M")
+                formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {
                     'title': self.connection_type,
                     'date': formatted_datetime,
@@ -124,17 +120,19 @@ class DistanceCornerView(FormView):
                     "distance_from_top": round(distance_from_top, 0),
                     "image_data": image_data,
                 }
-                response = render_to_pdf('pdfs/connection_corner.html', data,
-                                         'corner')
+                response = render_to_pdf('pdfs/connection_corner.html', data, 'corner')
                 return response
 
-        except:
-            messages.error(self.request,
-                           "Something went wrong, please check once more geometry of connection")
-            context = {'form': form, }
-
-        return render(self.request, template_name=self.template_name,
-                      context=context)
+        except Exception:
+            messages.error(
+                self.request,
+                "Something went wrong, please check once more geometry of connection",
+            )
+            context = {'form': form}
+        else:
+            return render(
+                self.request, template_name=self.template_name, context=context
+            )
 
 
 class DistanceRidgeView(FormView):
@@ -151,15 +149,13 @@ class DistanceRidgeView(FormView):
 
         return context
 
-    def _get_searched_assembly_parts(self, bolt_grade_value,
-                                     bolt_diameter_value,
-                                     t_plate_connection_value):
-
-        bolt = calculation.FindingBolt()
+    def _get_searched_assembly_parts(
+        self, bolt_grade_value, bolt_diameter_value, t_plate_connection_value
+    ):
+        bolt = FindingBolt()
         searched_bolt, searched_washer = bolt.searching_assembly_parts(
-            bolt_grade_value,
-            bolt_diameter_value,
-            t_plate_connection_value)
+            bolt_grade_value, bolt_diameter_value, t_plate_connection_value
+        )
 
         return searched_bolt, searched_washer
 
@@ -170,8 +166,7 @@ class DistanceRidgeView(FormView):
         girder_height_value = cleaned_data['girder_height']
         left_t_flange_girder_value = cleaned_data['left_t_flange_girder']
         right_t_flange_girder_value = cleaned_data['right_t_flange_girder']
-        t_plate_connection_value = (cleaned_data[
-            't_plate_connection'])
+        t_plate_connection_value = cleaned_data['t_plate_connection']
         bolt_grade_value = cleaned_data['bolt_grade']
         bolt_diameter_value = cleaned_data['bolt_diameter']
 
@@ -181,17 +176,17 @@ class DistanceRidgeView(FormView):
             bolt_grade_value, bolt_diameter_value, t_plate_connection_value
         )
 
-        assembly_part = calculation.ThicknessPartsAssembly()
+        assembly_part = ThicknessPartsAssembly()
 
-        total_length_bolt_value = assembly_part.total_length_bolt(
-            searched_bolt)
+        total_length_bolt_value = assembly_part.total_length_bolt(searched_bolt)
 
         thickness_washer_value = searched_washer.thickness_washer
 
         space_for_screw_value = assembly_part.space_for_screw(
-            searched_bolt, t_plate_connection_value)
+            searched_bolt, t_plate_connection_value
+        )
 
-        ridge = calculation.CreatingRidge()
+        ridge = CreatingRidge()
 
         try:
             lines, searched_distance = ridge.creating_lines(
@@ -210,25 +205,26 @@ class DistanceRidgeView(FormView):
             raw_distance_from_left, raw_distance_from_right = searched_distance
 
             distance_from_left = assembly_part.adding_w_bolt_head(
-                searched_bolt,
-                raw_distance_from_left)
+                searched_bolt, raw_distance_from_left
+            )
 
             distance_from_right = assembly_part.adding_w_bolt_head(
-                searched_bolt,
-                raw_distance_from_right)
+                searched_bolt, raw_distance_from_right
+            )
 
             image_data = creating_graph(*lines)
-            context = {'form': form, "image_data": image_data,
-                       "distance_from_left": round(distance_from_left, 0),
-                       "distance_from_right": round(distance_from_right, 0),
-                       'title': self.title,
-                       'connection_type': self.connection_type
-                       }
+            context = {
+                'form': form,
+                "image_data": image_data,
+                "distance_from_left": round(distance_from_left, 0),
+                "distance_from_right": round(distance_from_right, 0),
+                'title': self.title,
+                'connection_type': self.connection_type,
+            }
 
             if "save_to_pdf" == self.request.POST.get("save_pdf", ""):
                 current_date = datetime.now()
-                formatted_datetime = current_date.strftime(
-                    "%d-%m-%Y %H:%M")
+                formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {
                     'title': self.connection_type,
                     'date': formatted_datetime,
@@ -243,14 +239,14 @@ class DistanceRidgeView(FormView):
                     "distance_from_right": round(distance_from_right, 0),
                     "image_data": image_data,
                 }
-                response = render_to_pdf('pdfs/connection_ridge.html', data,
-                                         'ridge')
+                response = render_to_pdf('pdfs/connection_ridge.html', data, 'ridge')
                 return response
 
-        except:
-            messages.error(self.request,
-                           "Something went wrong, please check once more geometry of connection")
-            context = {'form': form, }
+        except Exception:
+            messages.error(
+                self.request,
+                "Something went wrong, please check once more geometry of connection",
+            )
+            context = {'form': form}
 
-        return render(self.request, template_name=self.template_name,
-                      context=context)
+        return render(self.request, template_name=self.template_name, context=context)

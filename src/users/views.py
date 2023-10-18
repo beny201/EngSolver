@@ -1,38 +1,42 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import CreateView
+from django.views.generic import FormView, ListView
 
-# from src.distance_checker.models import WasherStandard
 from .forms import UserRegisterForm
 
 
-def register(request):  # TODO CLASS BASED VIEW.
-    if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            messages.success(
-                request, f"Welcome {username}, you have been " f"logged  !"
-            )
-            user = form.save()
-            login(request, user)
-            return redirect(reverse("register"))
+class RegisterUser(FormView):
+    form_class = UserRegisterForm
+    template_name = 'users/register.html'
 
-    else:
-        return render(
-            request,
-            "user/register.html",
-            {"form": UserRegisterForm, 'title': "Register"},
-        )
+    def form_valid(self, form):
+        username = form.cleaned_data.get("username")
+        messages.success(self.request, f"Welcome {username}, you have been logged !")
+        user = form.save()
+        login(self.request, user)
+        return redirect(reverse("register"))
 
 
-class ViewAllData(CreateView):
+class ViewProfile(LoginRequiredMixin, ListView):
+    template_name = 'users/profile.html'
     model = User
+    login_url = 'login'
 
 
 class ChangePassword(PasswordChangeView):
-    template_name = 'user/change_password.html'
+    template_name = 'users/change_password.html'
+    success_url = 'change_password'
+
+    def get_success_url(self):
+        return reverse('change_password')
+
+    def form_valid(self, form):
+        username = self.request.user
+        print(username)
+        messages.success(self.request, f"Hello {username}, password was changed !")
+        return super().form_valid(form)
