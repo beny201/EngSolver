@@ -10,7 +10,7 @@ from .calculation import (
     FindingBolt,
     ThicknessPartsAssembly,
 )
-from .forms import CornerForm, RidgeForm
+from .forms import CornerFormModel, RidgeForm
 from .utils import creating_graph, render_to_pdf
 
 
@@ -20,7 +20,7 @@ class BasicView(TemplateView):
 
 class DistanceCornerView(FormView):
     template_name = "distance_checker/frame_connection.html"
-    form_class = CornerForm
+    form_class = CornerFormModel
 
     title = "Corner distance"
     connection_type = "Corner checker"
@@ -52,7 +52,7 @@ class DistanceCornerView(FormView):
         bolt_grade_value = cleaned_data['bolt_grade']
         bolt_diameter_value = cleaned_data['bolt_diameter']
 
-        form = CornerForm(initial=cleaned_data)
+        form = CornerFormModel(initial=cleaned_data)
 
         searched_bolt, searched_washer = self._get_searched_assembly_parts(
             bolt_grade_value, bolt_diameter_value, t_plate_connection_value
@@ -129,10 +129,7 @@ class DistanceCornerView(FormView):
                 "Something went wrong, please check once more geometry of connection",
             )
             context = {'form': form}
-        else:
-            return render(
-                self.request, template_name=self.template_name, context=context
-            )
+        return render(self.request, template_name=self.template_name, context=context)
 
 
 class DistanceRidgeView(FormView):
