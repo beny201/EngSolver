@@ -12,6 +12,12 @@
                     type="submit"
                     value="save_to_pdf"
                     name="save_pdf">Save to pdf</button>
+            {% if user.is_authenticated %}
+        <button class="btn btn-lg btn-secondary"
+                    type="submit"
+                    value="save_to_db"
+                    name="save_db">Save to database</button>
+            {% endif %}
         {% endif %}
     </form>
     <div class="container">

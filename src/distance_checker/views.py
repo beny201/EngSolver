@@ -120,8 +120,19 @@ class DistanceCornerView(FormView):
                     "distance_from_top": round(distance_from_top, 0),
                     "image_data": image_data,
                 }
+
                 response = render_to_pdf('pdfs/connection_corner.html', data, 'corner')
                 return response
+
+            if "save_to_db" == self.request.POST.get("save_db", ""):
+                corner = form.save(commit=False)
+                corner.author = self.request.user
+                corner.save()
+                messages.success(self.request, "Connection was saved to Database !")
+                context = {'form': form}
+                return render(
+                    self.request, template_name=self.template_name, context=context
+                )
 
         except Exception:
             messages.error(
