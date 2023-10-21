@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import FormView, ListView
+from django.views.generic import DetailView, FormView, ListView
+
+from distance_checker.models import Corner
 
 from .forms import UserRegisterForm
 
@@ -24,8 +25,23 @@ class RegisterUser(FormView):
 
 class ViewProfile(LoginRequiredMixin, ListView):
     template_name = 'users/profile.html'
-    model = User
+    model = Corner
     login_url = 'login'
+    context_object_name = "Corners"
+    paginate_by = 5
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        queryset = queryset.filter(author=user).order_by("created_date")
+        return queryset
+
+
+class ViewConnections(LoginRequiredMixin, DetailView):
+    login_url = 'login'
+    model = Corner
+    context_object_name = "Corners"
+    template_name = 'users/profile_detail.html'
 
 
 class ChangePassword(PasswordChangeView):
@@ -37,6 +53,5 @@ class ChangePassword(PasswordChangeView):
 
     def form_valid(self, form):
         username = self.request.user
-        print(username)
         messages.success(self.request, f"Hello {username}, password was changed !")
         return super().form_valid(form)
