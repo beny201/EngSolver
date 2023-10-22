@@ -54,7 +54,6 @@ class DistanceCornerView(FormView):
         bolt_diameter_value = cleaned_data['bolt_diameter']
 
         form = CornerFormModel(initial=cleaned_data)
-
         searched_bolt, searched_washer = self._get_searched_assembly_parts(
             bolt_grade_value, bolt_diameter_value, t_plate_connection_value
         )
@@ -69,7 +68,6 @@ class DistanceCornerView(FormView):
             searched_bolt, t_plate_connection_value
         )
         corner = CreatingCorner()
-
         try:
             lines, searched_distance = corner.creating_lines(
                 girder_angle=girder_angle_value,
@@ -127,6 +125,7 @@ class DistanceCornerView(FormView):
                 return response
 
             if "save_to_db" == self.request.POST.get("save_db", ""):
+                form = CornerFormModel(self.request.POST)
                 corner = form.save(commit=False)
                 corner.author = self.request.user
                 corner.distance_top = round(distance_from_top)
