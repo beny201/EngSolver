@@ -65,6 +65,7 @@ class CornerFormModel(ModelForm):
     class Meta:
         model = Corner
         fields = [
+            'case',
             'girder_angle',
             'girder_height',
             't_flange_girder',
@@ -74,6 +75,7 @@ class CornerFormModel(ModelForm):
             'bolt_grade',
         ]
         labels = {
+            'case': 'Name or number of case ',
             'girder_angle': 'Girder angle [degree]',
             'girder_height': "Girder height [mm]",
             't_flange_girder': "Thickness of flange in girder [mm]",

@@ -59,7 +59,7 @@ class Nut(models.Model):
 
 
 class Corner(models.Model):
-    name = models.TextField(max_length=50, default="Corner")
+    case = models.CharField(max_length=50, default="1000")
     girder_angle = models.FloatField(default=14.5)
     girder_height = models.IntegerField(default=400)
     t_flange_girder = models.IntegerField(default=20)
@@ -73,7 +73,9 @@ class Corner(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     last_modified_date = models.DateField(auto_now=True)
     created_date = models.DateField(auto_now_add=True)
+    distance_top = models.IntegerField(default=0)
+    distance_bottom = models.IntegerField(default=0)
 
     def __str__(self):
-        title = f"{self.name} - {self.created_date}"
+        title = f"{self.case} - {self.created_date}"
         return title

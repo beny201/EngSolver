@@ -43,6 +43,7 @@ class DistanceCornerView(FormView):
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
+        case_value = cleaned_data['case']
         girder_angle_value = cleaned_data['girder_angle']
         girder_height_value = cleaned_data['girder_height']
         t_flange_girder_value = cleaned_data['t_flange_girder']
@@ -97,8 +98,8 @@ class DistanceCornerView(FormView):
             context = {
                 'form': form,
                 "image_data": image_data,
-                "distance_from_bottom": round(distance_from_bottom, 0),
-                "distance_from_top": round(distance_from_top, 0),
+                "distance_from_bottom": round(distance_from_bottom),
+                "distance_from_top": round(distance_from_top),
                 'title': self.title,
                 'connection_type': self.connection_type,
             }
@@ -107,7 +108,7 @@ class DistanceCornerView(FormView):
                 current_date = datetime.now()
                 formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {
-                    'title': self.connection_type,
+                    'case': case_value,
                     'date': formatted_datetime,
                     'girder_angle_value': girder_angle_value,
                     'girder_height_value': girder_height_value,
@@ -116,17 +117,20 @@ class DistanceCornerView(FormView):
                     't_flange_column_value': t_flange_column_value,
                     't_plate_connection_value': t_plate_connection_value,
                     'used_bolt': searched_bolt,
-                    "distance_from_bottom": round(distance_from_bottom, 0),
-                    "distance_from_top": round(distance_from_top, 0),
+                    "distance_from_bottom": round(distance_from_bottom),
+                    "distance_from_top": round(distance_from_top),
                     "image_data": image_data,
                 }
 
-                response = render_to_pdf('pdfs/connection_corner.html', data, 'corner')
+                name_pdf = f'Corner - {case_value}'
+                response = render_to_pdf('pdfs/connection_corner.html', data, name_pdf)
                 return response
 
             if "save_to_db" == self.request.POST.get("save_db", ""):
                 corner = form.save(commit=False)
                 corner.author = self.request.user
+                corner.distance_top = round(distance_from_top)
+                corner.distance_bottom = round(distance_from_bottom)
                 corner.save()
                 messages.success(self.request, "Connection was saved to Database !")
                 context = {'form': form}
@@ -224,8 +228,8 @@ class DistanceRidgeView(FormView):
             context = {
                 'form': form,
                 "image_data": image_data,
-                "distance_from_left": round(distance_from_left, 0),
-                "distance_from_right": round(distance_from_right, 0),
+                "distance_from_left": round(distance_from_left),
+                "distance_from_right": round(distance_from_right),
                 'title': self.title,
                 'connection_type': self.connection_type,
             }
