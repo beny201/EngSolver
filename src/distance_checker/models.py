@@ -71,11 +71,11 @@ class Corner(models.Model):
     )
     bolt_diameter = models.IntegerField(default=30)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    last_modified_date = models.DateField(auto_now=True)
-    created_date = models.DateField(auto_now_add=True)
+    last_modified_date = models.DateTimeField(auto_now=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     distance_top = models.IntegerField(default=0)
     distance_bottom = models.IntegerField(default=0)
 
     def __str__(self):
-        title = f"{self.case} - {self.created_date}"
+        title = f"Corner - {self.case} - {self.created_date}"
         return title

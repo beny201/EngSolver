@@ -1,7 +1,64 @@
 {% extends "base.html" %}
+{% block title %}
+Corner - {{ corner.case }}
+{% endblock title %}
+
 {% block content %}
 
-{{ user.username }}
-corner.name
-
-{% endblock content %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Description</th>
+        <th scope="col">Detailed Data</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">Case</th>
+        <td>{{ corner.case }}</td>
+    </tr>
+        <th scope="row">Girder angle [degree]</th>
+        <td>{{ corner.girder_angle }}</td>
+    <tr>
+        <th scope="row">
+            Girder height [mm]
+        </th>
+        <td>{{ corner.girder_height }}</td>
+    </tr>
+        <th scope="row">Thickness of flange in girder [mm]</th>
+        <td>{{ corner.t_flange_girder }}</td>
+    <tr>
+        <th scope="row">Column width [mm]</th>
+        <td>{{ corner.column_width }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Thickness of flange in column [mm]</th>
+        <td>{{ corner.t_flange_column }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Thickness of plate in connection [mm]</th>
+        <td>{{ corner.t_plate_connection }}</td>
+    </tr>
+        <tr>
+        <th scope="row">Bolt grade </th>
+        <td>{{ corner.bolt_grade }}</td>
+    </tr>
+        <tr>
+        <th scope="row">Bolt diameter</th>
+        <td>{{ corner.bolt_diameter }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Creating date</th>
+        <td>{{ corner.created_date|date:"Y-m-d H:i" }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Distance when mounting from top [mm]</th>
+        <td>{{ corner.distance_top }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Distance when mounting from bottom [mm]</th>
+        <td>{{ corner.distance_bottom }}</td>
+    </tr>
+    </tbody>
+</table>
+    {% endblock content %}

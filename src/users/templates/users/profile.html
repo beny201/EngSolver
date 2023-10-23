@@ -2,12 +2,34 @@
 {% block content %}
 
 {{ user.username }}
+<div class="table-responsive">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Detailed Data</th>
+      <th scope="col">Case</th>
+      <th scope="col">Date</th>
+        <th scope="col">Distance top</th>
+        <th scope="col">Distance bottom</th>
+    </tr>
+    </thead>
+    <tbody>
 {% for corner in Corners %}
-      <li>
-        <a href="{{ corner.pk }}">{{ corner.created_date }}</a>
-        {{ corner.author }}
-      </li>
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+          <td><a class="btn btn-outline-primary btn-sm" href="{{ corner.pk }}" role="button">Detail </a></td>
+          <td>{{ corner.case }}</td>
+          <td>{{ corner.created_date }}</td>
+        <td>{{ corner.distance_top }}</td>
+        <td>{{ corner.distance_bottom }}</td>
+    </tr>
+
 {% endfor %}
+
+  </tbody>
+</table>
+</div>
 
 <div class="border-top pt-3">
 <nav aria-label="Page navigation example">

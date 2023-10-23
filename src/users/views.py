@@ -33,14 +33,14 @@ class ViewProfile(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        queryset = queryset.filter(author=user).order_by("created_date")
+        queryset = queryset.filter(author=user).order_by("-created_date")
         return queryset
 
 
 class ViewConnections(LoginRequiredMixin, DetailView):
     login_url = 'login'
     model = Corner
-    context_object_name = "Corners"
+    context_object_name = "corner"
     template_name = 'users/profile_detail.html'
 
 
