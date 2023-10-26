@@ -1,7 +1,13 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
-from .views import ChangePassword, RegisterUser, ViewConnections, ViewProfile
+from .views import (
+    ChangePassword,
+    DeleteConnections,
+    RegisterUser,
+    ViewConnections,
+    ViewProfile,
+)
 
 urlpatterns = [
     path('register/', RegisterUser.as_view(), name='register'),
@@ -12,4 +18,7 @@ urlpatterns = [
     path('profile/', ViewProfile.as_view(), name='profile'),
     path('profile/<int:pk>', ViewConnections.as_view(), name='connection_detail'),
     path('change/', ChangePassword.as_view(), name='change_password'),
+    path(
+        'profile/delete/<int:pk>', DeleteConnections.as_view(), name='connection_delete'
+    ),  # profiles/<int:pk>/delete # users/<int:pk>/profiles/<int:profile>
 ]

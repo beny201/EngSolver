@@ -12,6 +12,7 @@
       <th scope="col">Date</th>
         <th scope="col">Distance top</th>
         <th scope="col">Distance bottom</th>
+        <th scope="col">Remove </th>
     </tr>
     </thead>
     <tbody>
@@ -20,9 +21,12 @@
       <th scope="row">{{ forloop.counter }}</th>
           <td><a class="btn btn-outline-primary btn-sm" href="{{ corner.pk }}" role="button">Detail </a></td>
           <td>{{ corner.case }}</td>
-          <td>{{ corner.created_date }}</td>
+          <td>{{ corner.created_date|date:"Y-m-d H:i" }}</td>
         <td>{{ corner.distance_top }}</td>
         <td>{{ corner.distance_bottom }}</td>
+        <td><a class="btn btn-outline-danger btn-sm" href="{% url 'connection_delete' corner.pk %}"
+               role="button">Delete
+        </a></td>
     </tr>
 
 {% endfor %}
