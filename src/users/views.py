@@ -3,8 +3,8 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
-from django.urls import reverse
-from django.views.generic import DetailView, FormView, ListView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView, DetailView, FormView, ListView
 
 from distance_checker.models import Corner
 
@@ -37,14 +37,22 @@ class ViewProfile(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ViewConnections(LoginRequiredMixin, DetailView):
+class ConnectionView(LoginRequiredMixin, DetailView):
     login_url = 'login'
     model = Corner
     context_object_name = "corner"
     template_name = 'users/profile_detail.html'
 
 
-class ChangePassword(PasswordChangeView):
+class DeleteConnectionView(LoginRequiredMixin, DeleteView):
+    login_url = 'login'
+    model = Corner
+    context_object_name = "corner"
+    template_name = 'users/delete_confirm.html'
+    success_url = reverse_lazy('profile')
+
+
+class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'users/change_password.html'
     success_url = 'change_password'
 
