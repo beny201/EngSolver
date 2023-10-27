@@ -11,7 +11,7 @@ from distance_checker.models import Corner
 from .forms import UserRegisterForm
 
 
-class RegisterUser(FormView):
+class UserRegistrationView(FormView):
     form_class = UserRegisterForm
     template_name = 'users/register.html'
 
@@ -23,10 +23,9 @@ class RegisterUser(FormView):
         return redirect(reverse("register"))
 
 
-class ViewProfile(LoginRequiredMixin, ListView):
+class ProfileView(LoginRequiredMixin, ListView):
     template_name = 'users/profile.html'
     model = Corner
-    login_url = 'login'
     context_object_name = "Corners"
     paginate_by = 5
 
@@ -54,10 +53,7 @@ class DeleteConnectionView(LoginRequiredMixin, DeleteView):
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'users/change_password.html'
-    success_url = 'change_password'
-
-    def get_success_url(self):
-        return reverse('change_password')
+    success_url = reverse_lazy('change_password')
 
     def form_valid(self, form):
         username = self.request.user
