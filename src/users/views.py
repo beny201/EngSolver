@@ -37,14 +37,12 @@ class ProfileView(LoginRequiredMixin, ListView):
 
 
 class ConnectionView(LoginRequiredMixin, DetailView):
-    login_url = 'login'
     model = Corner
     context_object_name = "corner"
     template_name = 'users/profile_detail.html'
 
 
 class DeleteConnectionView(LoginRequiredMixin, DeleteView):
-    login_url = 'login'
     model = Corner
     context_object_name = "corner"
     template_name = 'users/delete_confirm.html'
