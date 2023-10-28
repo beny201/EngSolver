@@ -10,7 +10,7 @@ from .calculation import (
     FindingBolt,
     ThicknessPartsAssembly,
 )
-from .forms import CornerFormModel, RidgeForm
+from .forms import CornerFormModel, RidgeFormModel
 from .utils import creating_graph, render_to_pdf
 
 
@@ -148,7 +148,7 @@ class DistanceCornerView(FormView):
 
 class DistanceRidgeView(FormView):
     template_name = "distance_checker/frame_connection.html"
-    form_class = RidgeForm
+    form_class = RidgeFormModel
 
     title = "Ridge distance"
     connection_type = "Ridge checker"
@@ -172,6 +172,7 @@ class DistanceRidgeView(FormView):
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
+        case_value = cleaned_data['case']
         left_girder_angle_value = cleaned_data['left_girder_angle']
         right_girder_angle_value = cleaned_data['right_girder_angle']
         girder_height_value = cleaned_data['girder_height']
@@ -181,7 +182,7 @@ class DistanceRidgeView(FormView):
         bolt_grade_value = cleaned_data['bolt_grade']
         bolt_diameter_value = cleaned_data['bolt_diameter']
 
-        form = RidgeForm(initial=cleaned_data)
+        form = RidgeFormModel(initial=cleaned_data)
 
         searched_bolt, searched_washer = self._get_searched_assembly_parts(
             bolt_grade_value, bolt_diameter_value, t_plate_connection_value
@@ -237,7 +238,7 @@ class DistanceRidgeView(FormView):
                 current_date = datetime.now()
                 formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {
-                    'title': self.connection_type,
+                    'case': case_value,
                     'date': formatted_datetime,
                     'left_girder_angle_value': left_girder_angle_value,
                     'right_girder_angle_value': right_girder_angle_value,
@@ -246,12 +247,27 @@ class DistanceRidgeView(FormView):
                     'right_t_flange_girder_value': right_t_flange_girder_value,
                     't_plate_connection_value': t_plate_connection_value,
                     'used_bolt': searched_bolt,
-                    "distance_from_left": round(distance_from_left, 0),
-                    "distance_from_right": round(distance_from_right, 0),
+                    "distance_from_left": round(distance_from_left),
+                    "distance_from_right": round(distance_from_right),
                     "image_data": image_data,
                 }
-                response = render_to_pdf('pdfs/connection_ridge.html', data, 'ridge')
+
+                name_pdf = f'Ridge - {case_value}'
+                response = render_to_pdf('pdfs/connection_ridge.html', data, name_pdf)
                 return response
+
+            if "save_to_db" == self.request.POST.get("save_db", ""):
+                form = RidgeFormModel(self.request.POST)
+                ridge = form.save(commit=False)
+                ridge.author = self.request.user
+                ridge.distance_left = round(distance_from_left)
+                ridge.distance_right = round(distance_from_right)
+                ridge.save()
+                messages.success(self.request, "Connection was saved to Database !")
+                context = {'form': form}
+                return render(
+                    self.request, template_name=self.template_name, context=context
+                )
 
         except Exception:
             messages.error(

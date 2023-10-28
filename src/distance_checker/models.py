@@ -92,8 +92,8 @@ class Ridge(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     last_modified_date = models.DateTimeField(auto_now=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    distance_top = models.IntegerField(null=True)
-    distance_bottom = models.IntegerField(null=True)
+    distance_left = models.IntegerField(null=True)
+    distance_right = models.IntegerField(null=True)
 
     def __str__(self):
         title = f"Ridge - {self.case} - {self.created_date}"
