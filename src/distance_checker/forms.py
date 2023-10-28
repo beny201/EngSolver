@@ -59,7 +59,6 @@ class CornerFormModel(ModelForm):
         .distinct()
         .order_by("diameter"),
         to_field_name='diameter',
-        initial=30,
     )
 
     class Meta:
@@ -73,6 +72,7 @@ class CornerFormModel(ModelForm):
             't_flange_column',
             't_plate_connection',
             'bolt_grade',
+            'bolt_diameter',
         ]
         labels = {
             'case': 'Name or number of case ',
@@ -83,6 +83,57 @@ class CornerFormModel(ModelForm):
             't_flange_column': "Thickness of flange in column [mm]",
             't_plate_connection': 'Thickness of plate in connection [mm]',
         }
+
+        widgets = {
+            'girder_angle': forms.NumberInput(
+                attrs={
+                    'max': '89',
+                    'min': '0.1',
+                }
+            ),
+            'girder_height': forms.NumberInput(
+                attrs={
+                    'max': '2000',
+                    'min': '100',
+                }
+            ),
+            't_flange_girder': forms.NumberInput(
+                attrs={
+                    'max': '100',
+                    'min': '5',
+                }
+            ),
+            'column_width': forms.NumberInput(
+                attrs={
+                    'max': '2500',
+                    'min': '100',
+                }
+            ),
+            't_flange_column': forms.NumberInput(
+                attrs={
+                    'max': '100',
+                    'min': '5',
+                }
+            ),
+            't_plate_connection': forms.NumberInput(
+                attrs={
+                    'max': '150',
+                    'min': '5',
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['case'].initial = 1000
+        self.fields['girder_angle'].initial = 14.5
+        self.fields['girder_height'].initial = 400
+        self.fields['t_flange_girder'].initial = 20
+        self.fields['column_width'].initial = 400
+        self.fields['t_flange_column'].initial = 20
+        self.fields['t_plate_connection'].initial = 20
+        self.fields['bolt_grade'].initial = "8_8"
+        self.fields['bolt_diameter'].initial = 30
 
 
 class RidgeForm(forms.Form):
