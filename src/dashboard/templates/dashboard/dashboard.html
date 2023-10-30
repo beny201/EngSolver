@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+Hey {{ user.username }}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Type of connection</th>
+            <th scope="col">Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><a class="btn btn-outline-primary btn-sm" href="{% url 'corner_view' %}" role="button">Corners </a></td>
+            <td>{{ qty_corners }}</td>
+        </tr>
+        <tr>
+            <td><a class="btn btn-outline-primary btn-sm" href="{% url 'ridge_view' %}" role="button">Ridge </a></td>
+            <td>{{ qty_ridges }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

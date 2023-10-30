@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+{{ user.username }}
+<div class="table-responsive">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Detailed Data</th>
+      <th scope="col">Case</th>
+      <th scope="col">Date</th>
+        <th scope="col">Distance top</th>
+        <th scope="col">Distance bottom</th>
+        <th scope="col">Remove </th>
+    </tr>
+    </thead>
+    <tbody>
+{% for corner in Corners %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+          <td><a class="btn btn-outline-primary btn-sm" href="{{ corner.pk }}" role="button">Detail </a></td>
+          <td>{{ corner.case }}</td>
+          <td>{{ corner.created_date|date:"Y-m-d H:i" }}</td>
+        <td>{{ corner.distance_top }}</td>
+        <td>{{ corner.distance_bottom }}</td>
+        <td><a class="btn btn-outline-danger btn-sm" href="{% url 'corner_delete' corner.pk %}"
+               role="button">Delete
+        </a></td>
+    </tr>
+
+{% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% include "paginate.html" %}
+
+{% endblock content %}
