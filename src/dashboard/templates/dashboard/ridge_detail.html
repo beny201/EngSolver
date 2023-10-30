@@ -15,50 +15,52 @@ Corner - {{ corner.case }}
     <tbody>
     <tr>
         <th scope="row">Case</th>
-        <td>{{ corner.case }}</td>
-    </tr>
-        <th scope="row">Girder angle [degree]</th>
-        <td>{{ corner.girder_angle }}</td>
-    <tr>
-        <th scope="row">
-            Girder height [mm]
-        </th>
-        <td>{{ corner.girder_height }}</td>
-    </tr>
-        <th scope="row">Thickness of flange in girder [mm]</th>
-        <td>{{ corner.t_flange_girder }}</td>
-    <tr>
-        <th scope="row">Column width [mm]</th>
-        <td>{{ corner.column_width }}</td>
+        <td>{{ ridge.case }}</td>
     </tr>
     <tr>
-        <th scope="row">Thickness of flange in column [mm]</th>
-        <td>{{ corner.t_flange_column }}</td>
+        <th scope="row">Left Girder angle [degree]</th>
+        <td>{{ ridge.left_girder_angle }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Right Girder angle [degree]</th>
+        <td>{{ ridge.right_girder_angle }}</td>
+    </tr>
+    <tr>
+        <th scope="row"> Girder height [mm]</th>
+        <td>{{ ridge.girder_height }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Thickness of flange in left girder [mm]</th>
+        <td>{{ ridge.left_t_flange_girder }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Thickness of flange in right girder [mm]</th>
+        <td>{{ ridge.right_t_flange_girder }}</td>
     </tr>
     <tr>
         <th scope="row">Thickness of plate in connection [mm]</th>
-        <td>{{ corner.t_plate_connection }}</td>
+        <td>{{ ridge.t_plate_connection }}</td>
     </tr>
-        <tr>
-        <th scope="row">Bolt grade </th>
-        <td>{{ corner.bolt_grade }}</td>
+    <tr>
+        <th scope="row">Bolt grade</th>
+        <td>{{ ridge.bolt_grade }}</td>
     </tr>
-        <tr>
+    <tr>
         <th scope="row">Bolt diameter</th>
-        <td>{{ corner.bolt_diameter }}</td>
+        <td>{{ ridge.bolt_diameter }}</td>
     </tr>
     <tr>
         <th scope="row">Creating date</th>
-        <td>{{ corner.created_date|date:"Y-m-d H:i" }}</td>
+        <td>{{ ridge.created_date|date:"Y-m-d H:i" }}</td>
     </tr>
     <tr>
-        <th scope="row">Distance when mounting from top [mm]</th>
-        <td>{{ corner.distance_top }}</td>
+        <th scope="row">Distance when mounting from left [mm]</th>
+        <td>{{ ridge.distance_left }}</td>
     </tr>
     <tr>
-        <th scope="row">Distance when mounting from bottom [mm]</th>
-        <td>{{ corner.distance_bottom }}</td>
+        <th scope="row">Distance when mounting from right [mm]</th>
+        <td>{{ ridge.distance_right }}</td>
     </tr>
     </tbody>
 </table>
-    {% endblock content %}
+{% endblock content %}
