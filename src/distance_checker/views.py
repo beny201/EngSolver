@@ -102,7 +102,7 @@ class DistanceCornerView(FormView):
                 'connection_type': self.connection_type,
             }
 
-            if "save_to_pdf" == self.request.POST.get("save_pdf", ""):
+            if self.request.POST.get("save_pdf", ""):
                 current_date = datetime.now()
                 formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {
@@ -124,7 +124,7 @@ class DistanceCornerView(FormView):
                 response = render_to_pdf('pdfs/connection_corner.html', data, name_pdf)
                 return response
 
-            if "save_to_db" == self.request.POST.get("save_db", ""):
+            if self.request.POST.get("save_db", ""):
                 form = CornerFormModel(self.request.POST)
                 corner = form.save(commit=False)
                 corner.author = self.request.user
@@ -234,7 +234,7 @@ class DistanceRidgeView(FormView):
                 'connection_type': self.connection_type,
             }
 
-            if "save_to_pdf" == self.request.POST.get("save_pdf", ""):
+            if self.request.POST.get("save_pdf"):
                 current_date = datetime.now()
                 formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {
@@ -256,7 +256,7 @@ class DistanceRidgeView(FormView):
                 response = render_to_pdf('pdfs/connection_ridge.html', data, name_pdf)
                 return response
 
-            if "save_to_db" == self.request.POST.get("save_db", ""):
+            if self.request.POST.get("save_db"):
                 form = RidgeFormModel(self.request.POST)
                 ridge = form.save(commit=False)
                 ridge.author = self.request.user
