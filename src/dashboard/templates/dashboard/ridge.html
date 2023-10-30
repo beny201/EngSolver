@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+{{ user.username }}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Detailed Data</th>
+            <th scope="col">Case</th>
+            <th scope="col">Date</th>
+            <th scope="col">Distance left</th>
+            <th scope="col">Distance right</th>
+            <th scope="col">Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ridge in Ridges %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a class="btn btn-outline-primary btn-sm" href="{{ ridge.pk }}" role="button">Detail </a></td>
+            <td>{{ ridge.case }}</td>
+            <td>{{ ridge.created_date|date:"Y-m-d H:i" }}</td>
+            <td>{{ ridge.distance_left }}</td>
+            <td>{{ ridge.distance_left }}</td>
+            <td><a class="btn btn-outline-danger btn-sm" href="{% url 'ridge_delete' ridge.pk %}"
+                   role="button">Delete
+            </a></td>
+        </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include "paginate.html" %}
+
+{% endblock content %}

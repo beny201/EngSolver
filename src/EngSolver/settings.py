@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 ]
 
-INSTALLED_EXTENSIONS = ['users', 'distance_checker']
+INSTALLED_EXTENSIONS = ['users', 'distance_checker', 'dashboard']
 
 INSTALLED_APPS += INSTALLED_EXTENSIONS
 
