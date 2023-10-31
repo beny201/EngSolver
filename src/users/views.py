@@ -23,7 +23,7 @@ class UserRegistrationView(FormView):
 
 class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'users/change_password.html'
-    success_url = reverse_lazy('profile')
+    success_url = reverse_lazy('profiles')
 
     def form_valid(self, form):
         username = self.request.user
