@@ -25,12 +25,32 @@ class CornerCalculationView(LoginRequiredMixin, ListView):
     model = Corner
     context_object_name = "Corners"
     paginate_by = 5
+    form_class = SearchedValues
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context["form"] = self.form_class()
+        return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        queryset = queryset.filter(author=user).order_by("-created_date")
-        return queryset
+        queryset_main = queryset.filter(author=user).order_by("-created_date")
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            if form.cleaned_data.get("case"):
+                if (
+                    queryset_main.filter(
+                        case__icontains=form.cleaned_data["case"]
+                    ).count()
+                    == 0
+                ):
+                    messages.error(self.request, "Case not found !")
+                else:
+                    return queryset_main.filter(
+                        case__icontains=form.cleaned_data["case"]
+                    )
+        return queryset_main
 
 
 class CornerDetailedView(LoginRequiredMixin, DetailView):
@@ -62,7 +82,7 @@ class RidgeCalculationView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         user = self.request.user
         queryset_main = queryset.filter(author=user).order_by("-created_date")
-        form = self.form_class(self.request.get)
+        form = self.form_class(self.request.GET)
         if form.is_valid():
             if form.cleaned_data.get("case"):
                 if (
