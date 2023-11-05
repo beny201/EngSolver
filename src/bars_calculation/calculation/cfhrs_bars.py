@@ -60,21 +60,20 @@ class ProfileCFRHS:
         self,
         sectional_area: float,
         second_moment_area: float,
-        radius_of_gyration: float,
         yield_strength: int,
         length: Union[int, float],
         plastic_section: float,
     ):
-        self.sectional_area = sectional_area * cm**2
-        self.second_moment_area = second_moment_area * cm**4
-        self.radius_of_gyration = radius_of_gyration * si.mm
-        self.yield_strength = yield_strength
-        self.plastic_section = plastic_section * cm**3
-        self.length = length * si.m
-        self.WEIGHT = SteelGrade().WEIGHT
+        self.A = sectional_area * cm**2
+        self.Iy = second_moment_area * cm**4
+        self.Fy = yield_strength
+        self.Wply = plastic_section * cm**3
+        self.L = length * si.m
+        self.G = SteelGrade().WEIGHT
+        self.iy = math.sqrt(self.Iy / self.A)  # radius_of_gyration
 
     def weight_per_m(self) -> float:
-        return self.sectional_area * self.WEIGHT
+        return self.A * self.G
 
 
 class ReductionFactorsCFRHS(ProfileCFRHS):
@@ -82,7 +81,6 @@ class ReductionFactorsCFRHS(ProfileCFRHS):
         self,
         sectional_area: float,
         second_moment_area: float,
-        radius_of_gyration: float,
         yield_strength: int,
         length: Union[int, float],
         plastic_section: float,
@@ -90,31 +88,27 @@ class ReductionFactorsCFRHS(ProfileCFRHS):
         super().__init__(
             sectional_area,
             second_moment_area,
-            radius_of_gyration,
             yield_strength,
             length,
             plastic_section,
         )
         self.buckling_factor = 1
         self.buckling_curve = BucklingCurves().buckling_curve("c")
-        self.MODULUS_OF_ELASTICITY = SteelGrade().MODULUS_OF_ELASTICITY
+        self.E = SteelGrade().MODULUS_OF_ELASTICITY
+        self.iy = math.sqrt(self.Iy / self.A)  # radius_of_gyration
 
     def epsilon(self) -> float:
-        yield_strength = self.yield_strength / si.MPa
+        yield_strength = self.Fy / si.MPa
         return math.sqrt(235 / yield_strength)
 
     def lambda_slenderness_1(self) -> float:
-        return math.pi * (math.sqrt((self.MODULUS_OF_ELASTICITY / self.yield_strength)))
+        return math.pi * (math.sqrt((self.E / self.Fy)))
 
     def buckling_length(self) -> float:
-        return self.length * self.buckling_factor
+        return self.L * self.buckling_factor
 
-    def lambda_relative_slenderness(
-        self,
-    ) -> float:
-        return (self.buckling_length() / self.radius_of_gyration) * (
-            1 / self.lambda_slenderness_1()
-        )
+    def lambda_relative_slenderness(self) -> float:
+        return (self.buckling_length() / self.iy) * (1 / self.lambda_slenderness_1())
 
     def theta_reduction_factor(
         self,
@@ -144,7 +138,6 @@ class CalculationCFRHS(ReductionFactorsCFRHS):
         self,
         sectional_area: float,
         second_moment_area: float,
-        radius_of_gyration: float,
         yield_strength: int,
         length: Union[int, float],
         plastic_section: float,
@@ -157,74 +150,68 @@ class CalculationCFRHS(ReductionFactorsCFRHS):
         super().__init__(
             sectional_area,
             second_moment_area,
-            radius_of_gyration,
             yield_strength,
             length,
             plastic_section,
         )
 
-        self.sectional_axial_force = sectional_axial_force * si.kN
-        self.sectional_bending_moment = sectional_bending_moment * si.kN * si.m
-        self.eccentricity = eccentricity * si.mm
-        self.gamma_0 = gammas['ym0']
-        self.gamma_1 = gammas['ym1']
-        self.gamma_2 = gammas['ym2']
-        self.MODULUS_OF_ELASTICITY = SteelGrade().MODULUS_OF_ELASTICITY
+        self.Ned = sectional_axial_force * si.kN
+        self.Med = sectional_bending_moment * si.kN * si.m
+        self.ecc = eccentricity * si.mm
+        self.ym0 = gammas['ym0']
+        self.ym1 = gammas['ym1']
+        self.ym2 = gammas['ym2']
+        self.E = SteelGrade().MODULUS_OF_ELASTICITY
         self.limit_deformation = limit_deformation
+        self.iy = math.sqrt(self.Iy / self.A)  # radius_of_gyration
 
     def tension_capacity(self) -> float:
-        return (self.sectional_area * self.yield_strength) / self.gamma_1
+        return (self.A * self.Fy) / self.ym1
 
     def compression_capacity(self) -> float:
-        return (
-            self.sectional_area * self.yield_strength * self.chi_reduction_factor()
-        ) / self.gamma_1
+        return (self.A * self.Fy * self.chi_reduction_factor()) / self.ym1
 
     def load_from_self_weight(self) -> float:
         return self.weight_per_m() * 0.01 * si.kN / si.kg
 
     def bending_from_self_weight(self) -> float:
-        return (self.load_from_self_weight() * self.length**2) / 8
+        return (self.load_from_self_weight() * self.L**2) / 8
 
     def bending_from_eccentricity(self) -> float:
-        return self.sectional_axial_force * self.eccentricity
+        return self.Ned * self.ecc
 
     def total_bending(self) -> float:
         return (
             self.bending_from_self_weight()
             + self.bending_from_eccentricity()
-            + self.sectional_bending_moment
+            + self.Med
         )
 
     def bending_capacity(self) -> float:
-        return self.plastic_section * self.yield_strength / self.gamma_1
+        return self.Wply * self.Fy / self.ym1
 
     def deflection_self_weight(self) -> float:
-        return (5 * self.load_from_self_weight() * self.length**4) / (
-            384 * self.MODULUS_OF_ELASTICITY * self.second_moment_area
+        return (5 * self.load_from_self_weight() * self.L**4) / (
+            384 * self.E * self.Iy
         )
 
     def deflection_bending(self) -> float:
-        bending_moment = (
-            self.sectional_bending_moment + self.bending_from_eccentricity()
-        )
-        return (bending_moment * self.length**2) / (
-            8 * self.MODULUS_OF_ELASTICITY * self.second_moment_area
-        )
+        bending_moment = self.Med + self.bending_from_eccentricity()
+        return (bending_moment * self.L**2) / (8 * self.E * self.Iy)
 
     def total_deflection(self) -> float:
         return self.deflection_bending() + self.deflection_self_weight()
 
     def check_deformation(self) -> float:
-        limit = self.length / self.limit_deformation
+        limit = self.L / self.limit_deformation
         return self.total_deflection() / limit
 
     def check_utilization_with_compression(self) -> float:
-        axial_ur = self.sectional_axial_force / self.compression_capacity()
+        axial_ur = self.Ned / self.compression_capacity()
         bending_ur = self.total_bending() / self.bending_capacity()
         return axial_ur + bending_ur + 0.01
 
     def check_utilization_with_tension(self) -> float:
-        axial_ur = self.sectional_axial_force / self.tension_capacity()
+        axial_ur = self.Ned / self.tension_capacity()
         bending_ur = self.total_bending() / self.bending_capacity()
         return axial_ur + bending_ur + 0.01
