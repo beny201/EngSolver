@@ -1,17 +1,18 @@
-from django.core.management.base import BaseCommand
-import os
 import json
-import pprint
-from ...models import Bolt, BoltStandard, Nut, NutStandard, WasherStandard, \
-    Washer
+import os
 from typing import Dict, List, Tuple
+
+from django.core.management.base import BaseCommand
+
+from ...models import Bolt, BoltStandard, Nut, NutStandard, Washer, WasherStandard
 
 file_name_bolt_8_8 = "bolts_8_8"
 file_name_bolt_10_9 = "bolts_10_9"
 
-BOLTS_STANDARDS = {"8_8": ["EN-ISO-4032", "EN-ISO-4014", "EN-ISO-7089"],
-                   "10_9": ["14399-4D", "14399-4", "14399-5", "14399-6"]
-                   }
+BOLTS_STANDARDS = {
+    "8_8": ["EN-ISO-4032", "EN-ISO-4014", "EN-ISO-7089"],
+    "10_9": ["14399-4D", "14399-4", "14399-5", "14399-6"],
+}
 
 
 def reading_file(name: str) -> Dict:
@@ -25,9 +26,9 @@ def reading_file(name: str) -> Dict:
         return data
 
 
-def cleaning_data(bolts: Dict, bolt_grade: str) -> Tuple[List[Dict],
-List[Dict], List[Dict]]:
-
+def cleaning_data(
+    bolts: Dict, bolt_grade: str
+) -> Tuple[List[Dict], List[Dict], List[Dict]]:
     used_standard = BOLTS_STANDARDS[bolt_grade]
 
     cleaned_data_bolt = []
@@ -48,7 +49,6 @@ List[Dict], List[Dict]]:
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         type_to_add = file_name_bolt_10_9
         data = reading_file(type_to_add)
@@ -70,7 +70,8 @@ class Command(BaseCommand):
                 length=int(bolt["length"]),
                 diameter=int(bolt["diameter"]),
                 thread_length=float(bolt["p2"]),
-                standard=used_standard, )
+                standard=used_standard,
+            )
             new_bolt.save()
 
         nuts = cleaning_data(data, bolt_grade)[1]
@@ -83,7 +84,8 @@ class Command(BaseCommand):
                 thickness_nut=float(nut["p1"]),
                 width_nut=float(nut["p4"]),
                 diameter=int(nut["diameter"]),
-                standard=used_standard, )
+                standard=used_standard,
+            )
             new_nut.save()
 
         washers = cleaning_data(data, bolt_grade)[2]
@@ -96,5 +98,6 @@ class Command(BaseCommand):
                 thickness_washer=float(washer["p1"]),
                 width_washer=float(washer["p4"]),
                 diameter=int(washer["diameter"]),
-                standard=used_standard, )
+                standard=used_standard,
+            )
             new_washer.save()
