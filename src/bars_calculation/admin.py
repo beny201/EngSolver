@@ -1,3 +1,6 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# Register your models here.
+from .models import CalculationCfrhs, ProfileRhs
+
+admin.site.register(ProfileRhs)
+admin.site.register(CalculationCfrhs)
