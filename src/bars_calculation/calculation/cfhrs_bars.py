@@ -64,16 +64,19 @@ class ProfileCFRHS:
         length: Union[int, float],
         plastic_section: float,
     ):
-        self.A = sectional_area * cm**2
-        self.Iy = second_moment_area * cm**4
+        self.A = sectional_area * si.mm**2
+        self.Iy = second_moment_area * si.mm**4
         self.Fy = yield_strength
-        self.Wply = plastic_section * cm**3
+        self.Wply = plastic_section * si.mm**3
         self.L = length * si.m
         self.G = SteelGrade().WEIGHT
-        self.iy = math.sqrt(self.Iy / self.A)  # radius_of_gyration
 
     def weight_per_m(self) -> float:
         return self.A * self.G
+
+    def radius_of_gyration_iy(self):
+        iy = self.Iy / self.A
+        return math.sqrt(iy) * si.mm
 
 
 class ReductionFactorsCFRHS(ProfileCFRHS):
@@ -95,7 +98,7 @@ class ReductionFactorsCFRHS(ProfileCFRHS):
         self.buckling_factor = 1
         self.buckling_curve = BucklingCurves().buckling_curve("c")
         self.E = SteelGrade().MODULUS_OF_ELASTICITY
-        self.iy = math.sqrt(self.Iy / self.A)  # radius_of_gyration
+        self.iy = self.radius_of_gyration_iy()
 
     def epsilon(self) -> float:
         yield_strength = self.Fy / si.MPa
@@ -116,7 +119,7 @@ class ReductionFactorsCFRHS(ProfileCFRHS):
         return 0.5 * (
             1
             + self.buckling_curve * (self.lambda_relative_slenderness() - 0.2)
-            + self.lambda_relative_slenderness() ** 2
+            + (self.lambda_relative_slenderness() ** 2)
         )
 
     def chi_reduction_factor(self) -> float:
@@ -163,7 +166,6 @@ class CalculationCFRHS(ReductionFactorsCFRHS):
         self.ym2 = gammas['ym2']
         self.E = SteelGrade().MODULUS_OF_ELASTICITY
         self.limit_deformation = limit_deformation
-        self.iy = math.sqrt(self.Iy / self.A)  # radius_of_gyration
 
     def tension_capacity(self) -> float:
         return (self.A * self.Fy) / self.ym1
