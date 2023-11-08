@@ -33,11 +33,11 @@ def cleaning_data(data: Dict) -> List:
 class Command(BaseCommand):
     def handle(self, *args, **options):
         data = reading_file(file_name)
-        profiles = cleaning_data(data)[:2]
+        profiles = cleaning_data(data)
 
         for profile in profiles:
             new_profile = ProfileRhs(
-                name=profile['@NAME1'],
+                name=profile['@NAME_REVIT'],
                 H=int(profile["@DIM1"]),
                 B=int(profile["@DIM2"]),
                 T=float(profile["@DIM3"].replace(",", ".")),

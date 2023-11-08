@@ -1,52 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
-    <style>
-        .custom-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-        }
-        .custom-paragraph {
-            margin-left: 10px;
-        }
-    </style>
-    <h1>Hello</h1>
-    <p>This page is to help engineers in their daily tasks.</p>
-    <p>For now there are available:</p>
-    <div class="custom-container">
-        <a href="{% url 'corner_distance' %}"
-           type="submit"
-           class="btn btn-secondary"><span class="bi bi-box-arrow-down"></span> Corner Distance
-        </a>
-        <p class="custom-paragraph">
-            'Corner distance' is a module for checking
-            the minimum distance to the edge of structural connections in the
-            corners of frame structures. The module takes into account factors such
-            as the type of bolts and the thickness of the plate in the connection,
-            verifying whether there is sufficient space for on-site
-            installation.
-        </p>
-        <a href="{% url 'ridge_distance' %}"
-           type="submit"
-           class="btn btn-secondary"><span class="bi bi-box-arrow-down"></span> Ridge Distance
-        </a>
-        <p class="custom-paragraph">
-            'Ridge distance' is a module for checking
-            the minimum distance to the edge of structural connections in the
-            ridge of frame structures. The module takes into account factors such
-            as the type of bolts and the thickness of the plate in the connection,
-            verifying whether there is sufficient space for on-site
-            installation.
-        </p>
-        <a href="{% url 'ridge_distance' %}"
-           type="submit"
-           class="btn btn-secondary"><span class="bi bi-box-arrow-down"></span> Bracing
-        </a>
-        <p class="custom-paragraph">
-            'Bracing' is a module that helps calculate
-            and estimate the lightest CFRHS (Circular Formed Rectangular Hollow
-            Sections) with limitations on deflection for various forces.
-        </p>
-    </div>
+<style>
+    .custom-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .custom-paragraph {
+        margin-left: 10px;
+    }
+</style>
+<h1>Hello</h1>
+<p>This page is to help engineers in their daily tasks.</p>
+<p>For now there are available:</p>
+<div class="custom-container">
+    <a href="{% url 'corner_distance' %}"
+       type="submit"
+       class="btn btn-secondary"><span class="bi bi-box-arrow-down"></span> Corner Distance
+    </a>
+    <p class="custom-paragraph">
+        'Corner distance' is a module for checking
+        the minimum distance to the edge of structural connections in the
+        corners of frame structures. The module takes into account factors such
+        as the type of bolts and the thickness of the plate in the connection,
+        verifying whether there is sufficient space for on-site
+        installation.
+    </p>
+    <a href="{% url 'ridge_distance' %}"
+       type="submit"
+       class="btn btn-secondary"><span class="bi bi-box-arrow-down"></span> Ridge Distance
+    </a>
+    <p class="custom-paragraph">
+        'Ridge distance' is a module for checking
+        the minimum distance to the edge of structural connections in the
+        ridge of frame structures. The module takes into account factors such
+        as the type of bolts and the thickness of the plate in the connection,
+        verifying whether there is sufficient space for on-site
+        installation.
+    </p>
+    <a href="{% url 'calculation_bar' %}"
+       type="submit"
+       class="btn btn-secondary"><span class="bi bi-box-arrow-down"></span> Bracing
+    </a>
+    <p class="custom-paragraph">
+        'Bracing' is a module that helps calculate
+        and estimate the lightest CFRHS (Circular Formed Rectangular Hollow
+        Sections) with limitations on deflection for various forces.
+    </p>
+</div>
 {% endblock content %}

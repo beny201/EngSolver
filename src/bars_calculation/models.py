@@ -18,13 +18,27 @@ class ProfileRhs(models.Model):
     Wplz = models.FloatField(help_text="plastic_section Wplz [mm^3]")  # MSZ
 
     def __str__(self):
-        return self.name
+        return f'{self.name} + test'
 
 
 class CalculationCfrhs(models.Model):
     case = models.CharField(max_length=50)
+    country = models.CharField(
+        choices=[
+            ("Denmark", "Denmark"),
+            ("Germany", "Germany"),
+            ("Norway", "Norway"),
+            ("Sweden", "Sweden"),
+        ]
+    )
+    steel = models.CharField(
+        choices=[("S235", "S235"), ("S275", "S275"), ("S355", "S355")]
+    )
     axial_force = models.FloatField()
+    eccentricity = models.FloatField()
     bending_moment = models.FloatField()
+    length_profile = models.FloatField()
+    limit_deformation = models.FloatField()
     profile = models.ForeignKey(ProfileRhs, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     last_modified_date = models.DateTimeField(auto_now=True)

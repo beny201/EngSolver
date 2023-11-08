@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<h1>{{ connection_type }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-lg btn-secondary" type="submit">Check bar</button>
+
+    {% if utilization_compression %}
+    <button class="btn btn-lg btn-secondary"
+            type="submit"
+            value="show_data"
+            name="show_data">Show detailed data
+    </button>
+    {% if user.is_authenticated %}
+    <button class="btn btn-lg btn-secondary"
+            type="submit"
+            value="save_to_db"
+            name="save_db">Save to database
+    </button>
+    {% endif %}
+    {% endif %}
+
+    {% if utilization_compression %}
+    <div class="card mt-3">
+        <ul class="list-group">
+            <li class="list-group-item ">
+                Utilization when bar is compressed :
+                {{ utilization_compression }}
+            </li>
+            <li class="list-group-item">
+                Utilization when bar is tensioned :
+                {{ utilization_tension }}
+            </li>
+            <li class="list-group-item">
+                Utilization in deformation:
+                {{ utilization_deformation }}
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+
+</form>
+<div class="container">
+    <div class="row mt-3">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
