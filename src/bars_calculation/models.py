@@ -18,7 +18,7 @@ class ProfileRhs(models.Model):
     Wplz = models.FloatField(help_text="plastic_section Wplz [mm^3]")  # MSZ
 
     def __str__(self):
-        return f'{self.name} + test'
+        return f'{self.name}'
 
 
 class CalculationCfrhs(models.Model):
