@@ -43,9 +43,11 @@ class CalculationCfrhs(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     last_modified_date = models.DateTimeField(auto_now=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    utilization_compression = models.IntegerField(null=True)
-    utilization_tension = models.IntegerField(null=True)
-    utilization_deformation = models.IntegerField(null=True)
+    utilization_compression = models.FloatField(
+        null=True,
+    )
+    utilization_tension = models.FloatField(null=True)
+    utilization_deformation = models.FloatField(null=True)
 
     def __str__(self):
         return f'{self.case} + {self.profile}'

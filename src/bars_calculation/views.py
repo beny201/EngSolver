@@ -6,7 +6,6 @@ from django.views.generic import FormView
 from bars_calculation.forms import CalculationCfrhsForm
 
 from .calculation import CalculationCFRHS, CountryFactors, SteelGrade
-from .models import ProfileRhs
 
 
 class CalculationRhsView(FormView):
@@ -33,7 +32,7 @@ class CalculationRhsView(FormView):
         value_bending_moment = cleaned_data['bending_moment']
         value_length_profile = cleaned_data['length_profile']
         value_limit_deformation = cleaned_data['limit_deformation']
-        profile = ProfileRhs.objects.get(name=cleaned_data["profile"])
+        profile = cleaned_data["profile"]
 
         gammas = CountryFactors()
         gammas_country = gammas.finding_gammas(value_country)
@@ -52,11 +51,9 @@ class CalculationRhsView(FormView):
             limit_deformation=value_limit_deformation,
         )
 
-        utilization_compression = round(
-            calculation.check_utilization_with_compression(), 2
-        )
-        utilization_tension = round(calculation.check_utilization_with_tension(), 2)
-        utilization_deformation = round(calculation.check_deformation(), 2)
+        utilization_compression = calculation.check_utilization_with_compression()
+        utilization_tension = calculation.check_utilization_with_tension()
+        utilization_deformation = calculation.check_deformation()
 
         if (
             utilization_compression >= 1
@@ -105,6 +102,20 @@ class CalculationRhsView(FormView):
             }
             return render(
                 self.request, template_name=self.template_name_detailed, context=context
+            )
+
+        if self.request.POST.get("save_db", ""):
+            calculation = form.save(commit=False)
+            calculation.author = self.request.user
+            calculation.profile = profile  # nie wiem czego nie bierze z formularza ?
+            calculation.utilization_compression = utilization_compression
+            calculation.utilization_tension = utilization_tension
+            calculation.utilization_deformation = utilization_deformation
+            calculation.save()
+            messages.success(self.request, "Connection was saved to Database !")
+            context = {'form': form}
+            return render(
+                self.request, template_name=self.template_name, context=context
             )
 
         return render(self.request, template_name=self.template_name, context=context)

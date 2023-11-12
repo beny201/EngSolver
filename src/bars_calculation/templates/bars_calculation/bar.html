@@ -28,15 +28,15 @@
         <ul class="list-group">
             <li class="list-group-item ">
                 Utilization when bar is compressed :
-                {{ utilization_compression }}
+                {{ utilization_compression|floatformat:2 }}
             </li>
             <li class="list-group-item">
                 Utilization when bar is tensioned :
-                {{ utilization_tension }}
+                {{ utilization_tension|floatformat:2 }}
             </li>
             <li class="list-group-item">
                 Utilization in deformation:
-                {{ utilization_deformation }}
+                {{ utilization_deformation|floatformat:2 }}
             </li>
         </ul>
     </div>

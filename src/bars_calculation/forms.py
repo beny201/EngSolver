@@ -8,9 +8,7 @@ available_profiles = []
 
 class CalculationCfrhsForm(ModelForm):
     profile = forms.ModelChoiceField(
-        queryset=ProfileRhs.objects.values_list("name", flat=True)
-        .filter(T__gte=3)
-        .order_by("G"),
+        queryset=ProfileRhs.objects.filter(T__gte=3).order_by("G"),
         to_field_name='name',
     )
 
