@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}
+Corner - {{ corner.case }}
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    .table td, .table th {
+        text-align: center;
+    }
+</style>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Description</th>
+        <th scope="col">Detailed Data</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">Case</th>
+        <td>{{ bar.case }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Country</th>
+        <td>{{ bar.country }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Steel grade</th>
+        <td>{{ bar.steel }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Creating date</th>
+        <td>{{ bar.created_date|date:"Y-m-d H:i" }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Axial force</th>
+        <td>{{ bar.axial_force }} kN</td>
+    </tr>
+    <tr>
+        <th scope="row">Eccentricity for axial force</th>
+        <td>{{ bar.eccentricity }} mm</td>
+    </tr>
+    <tr>
+        <th scope="row">Sectional bending moment</th>
+        <td>{{ bar.bending_moment }} kNm</td>
+    </tr>
+    <tr>
+        <th scope="row">Length of profile</th>
+        <td>{{ bar.length_profile }}m</td>
+    </tr>
+    <tr>
+        <th scope="row">Limit of deformation x = [L/x = L/200]</th>
+        <td>{{ bar.limit_deformation }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Profile</th>
+        <td>{{ bar.profile }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Utilization in compression</th>
+        <td>{{ bar.utilization_compression|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Utilization in tension</th>
+        <td>{{ bar.utilization_tension|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Utilization in deformation</th>
+        <td>{{ bar.utilization_deformation|floatformat:2 }}</td>
+    </tr>
+    </tbody>
+</table>
+{% endblock content %}
