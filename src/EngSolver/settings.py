@@ -22,9 +22,7 @@ from .env import env
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
 
-
 environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -36,7 +34,6 @@ SECRET_KEY = env('DB_NAME')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -52,10 +49,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 ]
 
-INSTALLED_EXTENSIONS = ['users', 'distance_checker', 'dashboard']
+INSTALLED_EXTENSIONS = ['users', 'distance_checker', 'dashboard', 'bars_calculation']
 
 INSTALLED_APPS += INSTALLED_EXTENSIONS
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'EngSolver.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -101,7 +96,6 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -120,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -149,7 +142,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',

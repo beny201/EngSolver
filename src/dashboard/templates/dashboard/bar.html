@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+
 {% block content %}
 
 {% include "dashboard\search.html" %}
@@ -15,25 +16,26 @@
             <th scope="col">Detailed Data</th>
             <th scope="col">Case</th>
             <th scope="col">Date</th>
-            <th scope="col">Distance left</th>
-            <th scope="col">Distance right</th>
+            <th scope="col">Utilization compression</th>
+            <th scope="col">Utilization tension</th>
+            <th scope="col">Utilization deformation</th>
             <th scope="col">Remove</th>
         </tr>
         </thead>
         <tbody>
-        {% for ridge in Ridges %}
+        {% for bar in calculation %}
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
-            <td><a class="btn btn-outline-primary btn-sm" href="{{ ridge.pk }}" role="button">Detail </a></td>
-            <td>{{ ridge.case }}</td>
-            <td>{{ ridge.created_date|date:"Y-m-d H:i" }}</td>
-            <td>{{ ridge.distance_left }}</td>
-            <td>{{ ridge.distance_left }}</td>
-            <td><a class="btn btn-outline-danger btn-sm" href="{% url 'ridge_delete' ridge.pk %}"
+            <td><a class="btn btn-outline-primary btn-sm" href="{{ bar.pk }}" role="button">Detail </a></td>
+            <td>{{ bar.case }}</td>
+            <td>{{ bar.created_date|date:"Y-m-d H:i" }}</td>
+            <td>{{ bar.utilization_compression|floatformat:2 }}</td>
+            <td>{{ bar.utilization_tension|floatformat:2 }}</td>
+            <td>{{ bar.utilization_deformation|floatformat:2 }}</td>
+            <td><a class="btn btn-outline-danger btn-sm" href="{% url 'bar_delete' bar.pk %}"
                    role="button">Delete
             </a></td>
         </tr>
-
         {% endfor %}
         </tbody>
     </table>

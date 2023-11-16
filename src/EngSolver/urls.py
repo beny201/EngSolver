@@ -23,4 +23,5 @@ urlpatterns = [
     path('', include("distance_checker.urls")),
     path('users/', include("users.urls")),
     path('dashboard/', include("dashboard.urls")),
+    path('bars/', include("bars_calculation.urls")),
 ]

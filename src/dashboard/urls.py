@@ -1,6 +1,9 @@
 from django.urls import path
 
 from dashboard.views import (
+    BarCalculationView,
+    BarDeleteView,
+    BarDetailedView,
     CalculationsView,
     CornerCalculationView,
     CornerDeleteView,
@@ -31,5 +34,16 @@ urlpatterns = [
         'connections/ridge/<int:pk>/delete',
         RidgeDeleteView.as_view(),
         name='ridge_delete',
+    ),
+    path('connections/bar/', BarCalculationView.as_view(), name='bars_view'),
+    path(
+        'connections/bar/<int:pk>/delete',
+        BarDeleteView.as_view(),
+        name='bar_delete',
+    ),
+    path(
+        'connections/bar/<int:pk>',
+        BarDetailedView.as_view(),
+        name='bar_detail',
     ),
 ]

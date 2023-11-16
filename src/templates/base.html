@@ -103,6 +103,12 @@
     <link rel="stylesheet"
           type="text/css"
           href="{% static 'EngSolver/base.css' %}"/>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -210,7 +216,7 @@
                         distance</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" aria-disabled="true">Bracing</a>
+                    <a class="nav-link" href="{% url 'calculation_bar' %}">Bracing</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">

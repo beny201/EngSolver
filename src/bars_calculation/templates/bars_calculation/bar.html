@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<h1>{{ connection_type }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-lg btn-secondary" type="submit">Check bar</button>
+
+    {% if utilization_compression %}
+    {% if user.is_authenticated %}
+    <button class="btn btn-lg btn-secondary"
+            type="submit"
+            value="save_to_db"
+            name="save_db">Save to database
+    </button>
+    <br> <br>
+    If you want to check detailed calculation, you need to be logged and save it.
+    {% endif %}
+    {% endif %}
+
+    {% if utilization_compression %}
+    <div class="card mt-3">
+        <ul class="list-group">
+            <li class="list-group-item ">
+                Utilization when bar is compressed :
+                {{ utilization_compression|floatformat:2 }}
+            </li>
+            <li class="list-group-item">
+                Utilization when bar is tensioned :
+                {{ utilization_tension|floatformat:2 }}
+            </li>
+            <li class="list-group-item">
+                Utilization in deformation:
+                {{ utilization_deformation|floatformat:2 }}
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+
+</form>
+
+{% include "message.html" %}
+
+{% endblock content %}

@@ -5,6 +5,12 @@ Corner - {{ corner.case }}
 
 {% block content %}
 
+<style>
+    .table td, .table th {
+        text-align: center;
+    }
+</style>
+
 <table class="table">
     <thead>
     <tr>
@@ -65,4 +71,7 @@ Corner - {{ corner.case }}
     </tr>
     </tbody>
 </table>
+
+{% include "back_to_up.html" %}
+
 {% endblock content %}

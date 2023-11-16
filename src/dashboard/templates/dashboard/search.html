@@ -1,0 +1,7 @@
+<form method="get">
+    {% csrf_token %}
+    <div class="input-group">
+        {{ form }}
+        <button class="btn btn-outline-primary btn-sm" type="submit">Search</button>
+    </div>
+</form>
