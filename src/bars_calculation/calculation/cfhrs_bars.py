@@ -9,7 +9,7 @@ cm = si.m / 100
 
 
 class CountryFactors:
-    COUNTRY_FACTORS = {
+    COUNTRY_FACTORS: Dict[str, Dict[str, int]] = {
         'Norway': {'ym0': 1.05, 'ym1': 1.05, 'ym2': 1.25},
         'Sweden': {'ym0': 1.00, 'ym1': 1.00, 'ym2': 1.25},
         'Denmark': {'ym0': 1.10, 'ym1': 1.20, 'ym2': 1.35},
@@ -39,7 +39,7 @@ class SteelGrade:
 
 
 class BucklingCurves:
-    BUCKLING_CURVES = {
+    BUCKLING_CURVES: Dict[str, int] = {
         'a0': 0.13,
         'a': 0.21,
         'b': 0.34,
@@ -51,8 +51,7 @@ class BucklingCurves:
         for key, value in self.BUCKLING_CURVES.items():
             if buckling_curve in key:
                 return self.BUCKLING_CURVES[buckling_curve]
-        else:
-            print("Check chosen curve")
+        print("Check chosen curve")
 
 
 class ProfileCFRHS:
@@ -63,7 +62,7 @@ class ProfileCFRHS:
         yield_strength: int,
         length: Union[int, float],
         plastic_section: float,
-    ):
+    ) -> None:
         self.A = sectional_area * si.mm**2
         self.Iy = second_moment_area * si.mm**4
         self.Fy = yield_strength
@@ -95,7 +94,7 @@ class ReductionFactorsCFRHS(ProfileCFRHS):
             length,
             plastic_section,
         )
-        self.buckling_factor = 1
+        self.buckling_factor = 1.0
         self.buckling_curve = BucklingCurves().buckling_curve("c")
         self.E = SteelGrade().MODULUS_OF_ELASTICITY
         self.iy = self.radius_of_gyration_iy()

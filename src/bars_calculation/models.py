@@ -21,6 +21,24 @@ class ProfileRhs(models.Model):
         return f'{self.name}'
 
 
+class DetailedCalculationCfrhs(models.Model):
+    profile_radius_gyration = models.FloatField()
+    buckling_curve = models.CharField()
+    buckling_factor = models.FloatField()
+    epsilon = models.FloatField()
+    lambda_slenderness_1 = models.FloatField()
+    buckling_length = models.FloatField()
+    lambda_relative_slenderness = models.FloatField()
+    theta_reduction_factor = models.FloatField()
+    chi_reduction_factor = models.FloatField()
+    tension_capacity = models.FloatField()
+    compression_capacity = models.FloatField()
+    total_bending = models.FloatField()
+    bending_capacity = models.FloatField()
+    total_deflection = models.FloatField()
+    last_modified_date = models.DateTimeField(auto_now=True)
+
+
 class CalculationCfrhs(models.Model):
     case = models.CharField(max_length=50)
     country = models.CharField(
@@ -43,11 +61,12 @@ class CalculationCfrhs(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     last_modified_date = models.DateTimeField(auto_now=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    utilization_compression = models.FloatField(
-        null=True,
-    )
+    utilization_compression = models.FloatField(null=True)
     utilization_tension = models.FloatField(null=True)
     utilization_deformation = models.FloatField(null=True)
+    detailed = models.ForeignKey(
+        DetailedCalculationCfrhs, on_delete=models.CASCADE, null=True
+    )
 
     def __str__(self):
         return f'{self.case} + {self.profile}'

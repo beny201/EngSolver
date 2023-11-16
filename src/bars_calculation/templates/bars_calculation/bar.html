@@ -9,17 +9,14 @@
     <button class="btn btn-lg btn-secondary" type="submit">Check bar</button>
 
     {% if utilization_compression %}
-    <button class="btn btn-lg btn-secondary"
-            type="submit"
-            value="show_data"
-            name="show_data">Show detailed data
-    </button>
     {% if user.is_authenticated %}
     <button class="btn btn-lg btn-secondary"
             type="submit"
             value="save_to_db"
             name="save_db">Save to database
     </button>
+    <br> <br>
+    If you want to check detailed calculation, you need to be logged and save it.
     {% endif %}
     {% endif %}
 
@@ -43,14 +40,7 @@
     {% endif %}
 
 </form>
-<div class="container">
-    <div class="row mt-3">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible" role="alert">{{ message }}</div>
-        {% endfor %}
-        {% endif %}
-    </div>
-</div>
+
+{% include "message.html" %}
 
 {% endblock content %}
