@@ -16,7 +16,7 @@
             name="save_db">Save to database
     </button>
     <br> <br>
-    If you want to check detailed calculation, you need to be logged and save it.
+    <p class="fs-3">If you want to check detailed calculation, you need to be logged and save it.</p>
     {% endif %}
     {% endif %}
 
@@ -42,5 +42,20 @@
 </form>
 
 {% include "message.html" %}
+
+{% if list_of_lightest_profiles %}
+
+<p class="fs-3">First 4 lightest bar which pass verification:</p>
+
+<div class="card mt-3">
+    <ul class="list-group">
+        {% for bar in list_of_lightest_profiles%}
+        <li class="list-group-item ">
+            {{ bar.name }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 
 {% endblock content %}

@@ -8,7 +8,7 @@ from django.views.generic import FormView
 from bars_calculation.forms import CalculationCfrhsForm
 
 from .calculation import CalculationCFRHS, CountryFactors, SteelGrade
-from .models import DetailedCalculationCfrhs
+from .models import DetailedCalculationCfrhs, ProfileRhs
 
 
 class CalculationRhsView(FormView):
@@ -66,11 +66,34 @@ class CalculationRhsView(FormView):
         else:
             messages.success(self.request, "Capacity ok !")
 
+        available_profiles = ProfileRhs.objects.filter(T__gte=3).order_by("G")
+        filtered_profiles = []
+        for searched_profile in available_profiles:
+            temp_calc = CalculationCFRHS(
+                sectional_area=searched_profile.A,
+                second_moment_area=searched_profile.Iy,
+                yield_strength=steel_grade,
+                length=value_length_profile,
+                plastic_section=searched_profile.Wply,
+                sectional_axial_force=value_axial_force,
+                sectional_bending_moment=value_bending_moment,
+                eccentricity=value_eccentricity,
+                gammas=gammas_country,
+                limit_deformation=value_limit_deformation,
+            )
+            if (
+                temp_calc.check_utilization_with_compression() <= 1
+                and temp_calc.check_utilization_with_tension() <= 1
+                and temp_calc.check_deformation() <= 1
+            ):
+                filtered_profiles.append(searched_profile)
+
         context = {
             "form": form,
             "utilization_compression": utilization_compression,
             'utilization_tension': utilization_tension,
             'utilization_deformation': utilization_deformation,
+            'list_of_lightest_profiles': filtered_profiles[:4],
         }
 
         detailed_obj = DetailedCalculationCfrhs(
