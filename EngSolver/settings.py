@@ -20,9 +20,8 @@ from .env import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
 
-environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -49,7 +48,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 ]
 
-INSTALLED_EXTENSIONS = ['users', 'distance_checker', 'dashboard', 'bars_calculation']
+INSTALLED_EXTENSIONS = ['users', 'distance_checker', 'dashboard', 'bars_calculation', ]
 
 INSTALLED_APPS += INSTALLED_EXTENSIONS
 
