@@ -1,9 +1,9 @@
+from bars_calculation.models import CalculationRhs
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
-from bars_calculation.models import CalculationCfrhs
 from dashboard.forms import SearchedValues
 from distance_checker.models import Corner, Ridge
 
@@ -16,7 +16,7 @@ class CalculationsView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         qty_corners = Corner.objects.filter(author=user).count()
         qty_ridges = Ridge.objects.filter(author=user).count()
-        qty_bars = CalculationCfrhs.objects.filter(author=user).count()
+        qty_bars = CalculationRhs.objects.filter(author=user).count()
         context['qty_corners'] = qty_corners
         context['qty_ridges'] = qty_ridges
         context['qty_bars'] = qty_bars
@@ -117,7 +117,7 @@ class RidgeDeleteView(LoginRequiredMixin, DeleteView):
 
 class BarCalculationView(LoginRequiredMixin, ListView):
     template_name = 'dashboard/bar.html'
-    model = CalculationCfrhs
+    model = CalculationRhs
     context_object_name = "calculation"
     paginate_by = 5
     form_class = SearchedValues
@@ -149,13 +149,13 @@ class BarCalculationView(LoginRequiredMixin, ListView):
 
 
 class BarDetailedView(LoginRequiredMixin, DetailView):
-    model = CalculationCfrhs
+    model = CalculationRhs
     context_object_name = "bar"
     template_name = 'dashboard/bar_detail.html'
 
 
 class BarDeleteView(LoginRequiredMixin, DeleteView):
-    model = CalculationCfrhs
+    model = CalculationRhs
     context_object_name = "bar"
     template_name = 'dashboard/delete_confirm.html'
     success_url = reverse_lazy('dashboard')

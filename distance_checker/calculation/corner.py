@@ -1,26 +1,26 @@
-from typing import Union
-from shapely.geometry import Point, LineString
-from shapely.ops import nearest_points
 import math
+from typing import Union
+
+from shapely.geometry import LineString, Point
+from shapely.ops import nearest_points
 
 
 class CreatingCorner:
     START_POINTS = (0, 0)
 
-    def creating_lines(self,
-                       girder_angle: float,
-                       girder_height: int,
-                       t_flange_girder: int,
-                       column_width: int,
-                       t_flange_column: int,
-                       t_plate_connection: int,
-                       length_bolt: float,
-                       total_length_bolt: float,
-                       thickness_washer: float,
-                       space_for_screw: float
-
-                       ):
-
+    def creating_lines(
+        self,
+        girder_angle: float,
+        girder_height: int,
+        t_flange_girder: int,
+        column_width: int,
+        t_flange_column: int,
+        t_plate_connection: int,
+        length_bolt: float,
+        total_length_bolt: float,
+        thickness_washer: float,
+        space_for_screw: float,
+    ):
         start_points_x, start_points_y = self.START_POINTS
 
         # drawings first line top flange column
@@ -56,24 +56,24 @@ class CreatingCorner:
         line_dh = LineString([point_d, point_h])
 
         # offset to find distance for bolts height
-        line_ij = line_ah.parallel_offset(total_length_bolt +
-                                          t_plate_connection,
-                                          "left")
+        line_ij = line_ah.parallel_offset(
+            total_length_bolt + t_plate_connection, "left"
+        )
 
         # offset to find distance for bolts height, assembly from bottom
         line_ij1 = line_ah.parallel_offset(
-            total_length_bolt + t_plate_connection,
-            "right")
+            total_length_bolt + t_plate_connection, "right"
+        )
 
         # offset to find distance for bolts height, assembly from bottom,
         # check top space
-        line_ij2 = line_ah.parallel_offset(
-            space_for_screw + t_plate_connection, "left")
+        line_ij2 = line_ah.parallel_offset(space_for_screw + t_plate_connection, "left")
 
         # offset to find distance for bolts height, assembly from top,
         # check bottom space
         line_ij3 = line_ah.parallel_offset(
-            space_for_screw + t_plate_connection, "right")
+            space_for_screw + t_plate_connection, "right"
+        )
 
         # intersection height of bolt and flange
         point_k = line_ij.intersection(flange_ae)
@@ -130,6 +130,7 @@ class CreatingCorner:
             value_top = looking_distance_top[0]
             extra_lines_to_shown.append(line_kl)
 
-        return ([line_ab, line_ae, line_ah, line_gh, line_dh,
-                 *extra_lines_to_shown],
-                [value_bottom, value_top])
+        return (
+            [line_ab, line_ae, line_ah, line_gh, line_dh, *extra_lines_to_shown],
+            [value_bottom, value_top],
+        )

@@ -8,7 +8,7 @@
     {{ form|crispy }}
     <button class="btn btn-lg btn-secondary" type="submit">Check bar</button>
 
-    {% if utilization_compression %}
+    {% if utilization_compression or utilization_tension %}
     {% if user.is_authenticated %}
     <button class="btn btn-lg btn-secondary"
             type="submit"
@@ -28,8 +28,8 @@
                 {{ utilization_compression|floatformat:2 }}
             </li>
             <li class="list-group-item">
-                Utilization when bar is tensioned :
-                {{ utilization_tension|floatformat:2 }}
+                Utilization in shear:
+                {{ utilization_shear|floatformat:2 }}
             </li>
             <li class="list-group-item">
                 Utilization in deformation:
@@ -38,18 +38,49 @@
         </ul>
     </div>
     {% endif %}
-
+    {% if utilization_tension %}
+    <div class="card mt-3">
+        <ul class="list-group">
+            <li class="list-group-item ">
+                Utilization when bar is tensioned :
+                {{ utilization_tension|floatformat:2 }}
+            </li>
+            <li class="list-group-item">
+                Utilization in shear:
+                {{ utilization_shear|floatformat:2 }}
+            </li>
+            <li class="list-group-item">
+                Utilization in deformation:
+                {{ utilization_deformation|floatformat:2 }}
+            </li>
+        </ul>
+    </div>
+    {% endif %}
 </form>
 
 {% include "message.html" %}
 
-{% if list_of_lightest_profiles %}
+{% if list_of_lightest_profiles_tension %}
 
-<p class="fs-3">First 4 lightest bar which pass verification:</p>
+<p class="fs-3">First 4 lightest bar which pass verification as tensioned:</p>
 
 <div class="card mt-3">
     <ul class="list-group">
-        {% for bar in list_of_lightest_profiles%}
+        {% for bar in list_of_lightest_profiles_tension%}
+        <li class="list-group-item ">
+            {{ bar.name }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if list_of_lightest_profiles_compression %}
+<p class="fs-3">First 4 lightest bar which pass verification as compressed:</p>
+
+<div class="card mt-3">
+    <ul class="list-group">
+        {% for bar in list_of_lightest_profiles_compression%}
         <li class="list-group-item ">
             {{ bar.name }}
         </li>

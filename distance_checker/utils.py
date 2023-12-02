@@ -1,13 +1,13 @@
-import io
 import base64
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import io
 from io import BytesIO
+from typing import Dict
 
 from django.http import HttpResponse
 from django.template.loader import get_template
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 from xhtml2pdf import pisa
-from typing import Dict
 
 
 def creating_graph(*args):
@@ -15,8 +15,7 @@ def creating_graph(*args):
     plot1 = fig.add_subplot(111)
 
     for line in args:
-        plot1.plot(
-            *line.xy)
+        plot1.plot(*line.xy)
 
     plot1.axis('equal')
     canvas = FigureCanvas(fig)
@@ -29,7 +28,6 @@ def creating_graph(*args):
 
 
 def render_to_pdf(template_src: str, context_dict: Dict, filename: str):
-
     name = f'{filename}/pdf'
     template = get_template(template_src)
     html = template.render(context_dict)
@@ -40,4 +38,3 @@ def render_to_pdf(template_src: str, context_dict: Dict, filename: str):
     if pdf.err:
         return HttpResponse("Invalid PDF", status_code=400, content_type="text/plain")
     return response
-

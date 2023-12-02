@@ -2,9 +2,8 @@ import json
 import os
 from typing import Dict, List
 
-from django.core.management import BaseCommand
-
 from bars_calculation.models import ProfileRhs
+from django.core.management import BaseCommand
 
 file_name = "RTRKKpro"
 
@@ -31,6 +30,12 @@ def cleaning_data(data: Dict) -> List:
 
 
 class Command(BaseCommand):
+    def __convert_to_float(self, value) -> float:
+        # try:
+        return float(value.replace(',', '.'))
+        # except ValueError:
+        # return 0.0
+
     def handle(self, *args, **options):
         data = reading_file(file_name)
         profiles = cleaning_data(data)
@@ -46,10 +51,11 @@ class Command(BaseCommand):
                 r0=float(profile["@RS"].replace(",", ".")),
                 r1=float(profile["@RA"].replace(",", ".")),
                 A=float(profile["@SX"].replace(",", ".")),
+                Ix=float(profile["@IX"].replace(",", ".")),
                 Iy=float(profile["@IY"].replace(",", ".")),
                 Iz=float(profile["@IZ"].replace(",", ".")),
                 Wply=float(profile["@MSY"].replace(",", ".")),
-                Wplz=float(profile["@MSZ"].replace(",", ".")),
+                Wplz=self.__convert_to_float(profile["@MSZ"]),
             )
             new_profile.save()
         print("Profiles added")
