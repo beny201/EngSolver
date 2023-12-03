@@ -3,180 +3,30 @@ from typing import Dict, Union
 
 import forallpeople as si
 
-from .structural_parameters import BucklingCurves, CountryFactors, SteelGrade
+from .buckling_parameters import ReductionBucklingFactorsRHS
+from .force_to_calculation import ForceToCalculation
+from .profile_to_calculation import ProfileRhsToCalculation
+from .structural_parameters import CountryFactors, SteelGrade
 
 si.environment('structural', top_level=False)
 
 cm = si.m / 100
 
 
-class ProfileRhsToCalculation:
-    def __init__(
-        self,
-        type_profile: str,
-        sectional_area: float,
-        height_profile: int,
-        width_profile: int,
-        thickness_flange: int,
-        second_moment_area_y: float,
-        second_moment_area_z: float,
-        yield_strength: int,
-        length: Union[int, float],
-        plastic_section_y: float,
-        plastic_section_z: float,
-        thickness_web: float,
-        radius: float,
-    ) -> None:
-        self.type_profile = type_profile
-        self.A = sectional_area * si.mm**2
-        self.H = height_profile * si.mm
-        self.B = width_profile * si.mm
-        self.T = thickness_flange * si.mm
-        self.Iy = second_moment_area_y * si.mm**4
-        self.Iz = second_moment_area_z * si.mm**4
-        self.Fy = yield_strength
-        self.Wply = plastic_section_y * si.mm**3
-        self.Wplz = plastic_section_z * si.mm**3
-        self.L = length * si.m
-        self.iy = self.radius_of_gyration_iy()
-        self.iz = self.radius_of_gyration_iz()
-        self.Az = self.shear_area_z()
-        self.Ay = self.shear_area_y()
-        self.G = self.weight_per_m()
-        self.Wely = self.elastic_section_y()
-        self.Welz = self.elastic_section_z()
-        self.t = thickness_web * si.mm
-        self.r = radius * si.mm
-
-    def weight_per_m(self) -> float:
-        return self.A * SteelGrade().WEIGHT
-
-    def radius_of_gyration_iy(self):
-        iy = self.Iy / self.A
-        return math.sqrt(iy) * si.mm
-
-    def radius_of_gyration_iz(self):
-        iz = self.Iz / self.A
-        return math.sqrt(iz) * si.mm
-
-    def shear_area_z(self):
-        Az = (self.A * self.H) / (self.B + self.H)
-        return Az
-
-    def shear_area_y(self):
-        Ay = (self.A * self.B) / (self.B + self.H)
-        return Ay
-
-    def elastic_section_y(self):
-        Wely = self.Iy * (self.H / 2)
-        return Wely
-
-    def elastic_section_z(self):
-        Welz = self.Iz * (self.B / 2)
-        return Welz
-
-
-class ReductionBucklingFactorsRHS:
-    def __init__(self, buckling_factor: float, profile: ProfileRhsToCalculation):
-        self.buckling_factor = buckling_factor
-        self.curve_for_chosen_profile = BucklingCurves().chosen_type_profile(
-            profile.type_profile
-        )
-        self.buckling_curve = BucklingCurves().buckling_curve(
-            self.curve_for_chosen_profile
-        )
-        self.E = SteelGrade().MODULUS_OF_ELASTICITY
-        self.profile = profile
-        self.epsilon = self.epsilon()
-        self.buckling_length = self.buckling_length()
-        self.lambda_slenderness_1 = self.lambda_slenderness_1()
-        self.chi_reduction_factor_y = self.chi_reduction_factor_y()
-        self.chi_reduction_factor_z = self.chi_reduction_factor_z()
-
-    def epsilon(self) -> float:
-        yield_strength = self.profile.Fy / si.MPa
-        return math.sqrt(235 / yield_strength)
-
-    def lambda_slenderness_1(self) -> float:
-        return math.pi * (math.sqrt((self.E / self.profile.Fy)))
-
-    def buckling_length(self) -> float:
-        return self.profile.L * self.buckling_factor
-
-    def lambda_relative_slenderness_y(self) -> float:
-        return (self.buckling_length / self.profile.iy) * (
-            1 / self.lambda_slenderness_1
-        )
-
-    def theta_reduction_factor_y(
-        self,
-    ) -> float:
-        return 0.5 * (
-            1
-            + self.buckling_curve * (self.lambda_relative_slenderness_y() - 0.2)
-            + (self.lambda_relative_slenderness_y() ** 2)
-        )
-
-    def chi_reduction_factor_y(self) -> float:
-        chi = 1 / (
-            self.theta_reduction_factor_y()
-            + math.sqrt(
-                (self.theta_reduction_factor_y() ** 2)
-                - (self.lambda_relative_slenderness_y() ** 2)
-            )
-        )
-        return min(chi, 1.0)
-
-    def lambda_relative_slenderness_z(self) -> float:
-        return (self.buckling_length / self.profile.iz) * (
-            1 / self.lambda_slenderness_1
-        )
-
-    def theta_reduction_factor_z(
-        self,
-    ) -> float:
-        return 0.5 * (
-            1
-            + self.buckling_curve * (self.lambda_relative_slenderness_z() - 0.2)
-            + (self.lambda_relative_slenderness_z() ** 2)
-        )
-
-    def chi_reduction_factor_z(self) -> float:
-        chi = 1 / (
-            self.theta_reduction_factor_z()
-            + math.sqrt(
-                (self.theta_reduction_factor_z() ** 2)
-                - (self.lambda_relative_slenderness_z() ** 2)
-            )
-        )
-        return min(chi, 1.0)
-
-
 class CalculationRHS:
     def __init__(
         self,
-        sectional_axial_force: Union[int, float],
-        sectional_bending_moment_y: Union[int, float],
-        sectional_bending_moment_z: Union[int, float],
-        sectional_shear_y: Union[int, float],
-        sectional_shear_z: Union[int, float],
-        eccentricity_y: Union[int, float],
-        eccentricity_z: Union[int, float],
+        sectional_forces: ForceToCalculation,
         gammas: Dict[str, float],
         limit_deformation: Union[int, float],
         main_axis: str,
         profile: ProfileRhsToCalculation,
         buckling_factor: ReductionBucklingFactorsRHS,
+        section_class: int,
     ):
+        self.force = sectional_forces
         self.profile = profile
         self.buckling_factor = buckling_factor
-        self.Ned = sectional_axial_force * si.kN
-        self.Med_y = sectional_bending_moment_y * si.kN * si.m
-        self.Med_z = sectional_bending_moment_z * si.kN * si.m
-        self.Ved_z = sectional_shear_z * si.kN
-        self.Ved_y = sectional_shear_y * si.kN
-        self.ecc_y = eccentricity_y * si.mm
-        self.ecc_z = eccentricity_z * si.mm
         self.ym0 = gammas['ym0']
         self.ym1 = gammas['ym1']
         self.ym2 = gammas['ym2']
@@ -184,9 +34,22 @@ class CalculationRHS:
         self.Fy_shear = self.profile.Fy
         self.profile.Fy = self.profile.Fy * (1 - self.reduction_due_shear())
         self.main_axis = main_axis
-        self.Med_y = self.total_bending_my()
-        self.Med_z = self.total_bending_mz()
         self.E = SteelGrade().MODULUS_OF_ELASTICITY
+        self.section_class = section_class
+        self.Wply = self.switching_to_Wely()
+        self.Wplz = self.switching_to_Welz()
+
+    def switching_to_Wely(self):
+        if self.section_class > 2:
+            return self.profile.Wely
+        else:
+            return self.profile.Wply
+
+    def switching_to_Welz(self):
+        if self.section_class > 2:
+            return self.profile.Welz
+        else:
+            return self.profile.Wplz
 
     def shear_capacity_z(self) -> float:
         return self.profile.Az * self.Fy_shear / (math.sqrt(3) * self.ym0)
@@ -195,10 +58,10 @@ class CalculationRHS:
         return self.profile.Ay * self.Fy_shear / (math.sqrt(3) * self.ym0)
 
     def check_shear_capacity_z(self) -> float:
-        return self.Ved_z / self.shear_capacity_z()
+        return self.force.Ved_z / self.shear_capacity_z()
 
     def check_shear_capacity_y(self) -> float:
-        return self.Ved_y / self.shear_capacity_y()
+        return self.force.Ved_y / self.shear_capacity_y()
 
     def check_total_shear(self) -> float:
         ur1 = self.check_shear_capacity_z()
@@ -207,11 +70,15 @@ class CalculationRHS:
 
     def reduction_due_shear(self) -> float:
         if (
-            self.Ved_y > self.shear_capacity_y() / 2
-            or self.Ved_z > self.shear_capacity_z() / 2
+            self.force.Ved_y > self.shear_capacity_y() / 2
+            or self.force.Ved_z > self.shear_capacity_z() / 2
         ):
-            q_y = min((((2 * self.Ved_y) / self.shear_capacity_y()) - 1) ** 2, 0.99)
-            q_z = min((((2 * self.Ved_z) / self.shear_capacity_z()) - 1) ** 2, 0.99)
+            q_y = min(
+                (((2 * self.force.Ved_y) / self.shear_capacity_y()) - 1) ** 2, 0.99
+            )
+            q_z = min(
+                (((2 * self.force.Ved_z) / self.shear_capacity_z()) - 1) ** 2, 0.99
+            )
             return min(q_y, q_z)
 
         else:
@@ -221,17 +88,16 @@ class CalculationRHS:
         return (self.profile.A * self.profile.Fy) / self.ym0
 
     def check_tension_profile(self) -> float:
-        return self.Ned / self.tension_profile()
+        return self.force.Ned / self.tension_profile()
 
     def bending_capacity_profile_y(self) -> float:
-        return self.profile.Wply * self.profile.Fy / self.ym0
+        return self.Wply * self.profile.Fy / self.ym0
 
     def bending_capacity_profile_z(self) -> float:
-        return self.profile.Wplz * self.profile.Fy / self.ym0
+        return self.Wply * self.profile.Fy / self.ym0
 
     def reduction_bending_capacity_factors(self) -> tuple[float, float]:
-        n = self.Ned / self.tension_profile()
-        z = self.profile.A
+        n = self.force.Ned / self.tension_profile()
         aw = min(
             (self.profile.A - 2 * self.profile.B * self.profile.T) / self.profile.A, 0.5
         )
@@ -255,21 +121,21 @@ class CalculationRHS:
         )
 
     def reduction_biaxial_bending_capacity(self) -> float:
-        n = self.Ned / self.tension_profile()
+        n = self.force.Ned / self.tension_profile()
         alpha = max(1.66 / (1 - (1.13 * (n**2))), 1)
         alpha = min(alpha, 6)
 
         beta = alpha
 
-        ur = (self.Med_y / self.reduced_bending_capacity_y()) ** alpha + (
-            self.Med_z / self.reduced_bending_capacity_y()
+        ur = (self.force.Med_y / self.reduced_bending_capacity_y()) ** alpha + (
+            self.force.Med_z / self.reduced_bending_capacity_y()
         ) ** beta
         return ur
 
     def check_interaction_axial_force_and_bending(self) -> float:
         ur = max(
-            self.Med_y / self.reduced_bending_capacity_y(),
-            self.Med_z / self.reduced_bending_capacity_z(),
+            self.force.Med_y / self.reduced_bending_capacity_y(),
+            self.force.Med_z / self.reduced_bending_capacity_z(),
             self.reduction_biaxial_bending_capacity(),
         )
         return ur
@@ -289,10 +155,10 @@ class CalculationRHS:
         ) / self.ym1
 
     def check_buckling_y(self) -> float:
-        return self.Ned / self.compression_capacity_y()
+        return self.force.Ned / self.compression_capacity_y()
 
     def check_buckling_z(self) -> float:
-        return self.Ned / self.compression_capacity_z()
+        return self.force.Ned / self.compression_capacity_z()
 
     def check_total_buckling(self) -> float:
         ur1 = self.check_buckling_z()
@@ -302,40 +168,17 @@ class CalculationRHS:
     def load_from_self_weight(self) -> float:
         return self.profile.G * 0.01 * si.kN / si.kg
 
-    def bending_from_self_weight(self) -> float:
-        return (self.load_from_self_weight() * self.profile.L**2) / 8
-
-    def bending_from_eccentricity_y(self) -> float:
-        return self.Ned * self.ecc_y
-
-    def bending_from_eccentricity_z(self) -> float:
-        return self.Ned * self.ecc_z
-
-    def total_bending_my(self) -> float:
-        Med_y = self.bending_from_eccentricity_y() + self.Med_y
-        if self.main_axis == "z":
-            return Med_y + self.bending_from_self_weight()
-        else:
-            return Med_y
-
-    def total_bending_mz(self) -> float:
-        Med_z = self.bending_from_eccentricity_z() + self.Med_z
-        if self.main_axis == "y":
-            return Med_z + self.bending_from_self_weight()
-        else:
-            return Med_z
-
     def bending_capacity_y(self) -> float:
         return self.profile.Wply * self.profile.Fy / self.ym1
 
     def check_bending_y(self) -> float:
-        return self.Med_y / self.bending_capacity_y()
+        return self.force.Med_y / self.bending_capacity_y()
 
     def bending_capacity_z(self) -> float:
         return self.profile.Wplz * self.profile.Fy / self.ym1
 
     def check_bending_z(self) -> float:
-        return self.Med_z / self.bending_capacity_z()
+        return self.force.Med_z / self.bending_capacity_z()
 
     def check_total_bending(self):
         ur1 = self.check_bending_y()
@@ -388,11 +231,11 @@ class CalculationRHS:
         )
 
     def deflection_bending_y(self) -> float:
-        bending_moment = self.Med_y
+        bending_moment = self.force.Med_y
         return (bending_moment * self.profile.L**2) / (8 * self.E * self.profile.Iy)
 
     def deflection_bending_z(self) -> float:
-        bending_moment = self.Med_z
+        bending_moment = self.force.Med_z
         return (bending_moment * self.profile.L**2) / (8 * self.E * self.profile.Iz)
 
     def check_deformation_y(self) -> float:
@@ -445,13 +288,13 @@ if __name__ == "__main__":
     gammas = CountryFactors()
     gammas_country = gammas.finding_gammas("Sweden")
     steel = SteelGrade()
-    steel_grade = steel.finding_steel("S275")
+    steel_grade = steel.finding_steel("S355")
 
     profil = ProfileRhsToCalculation(
         type_profile='CF',
         sectional_area=18.36 * (10**2),
-        height_profile=100,
-        width_profile=100,
+        height_profile=80,
+        width_profile=60,
         thickness_flange=5,
         second_moment_area_y=271 * (10**4),
         second_moment_area_z=271 * (10**4),
@@ -459,17 +302,19 @@ if __name__ == "__main__":
         length=5,
         plastic_section_y=64.08 * (10**3),
         plastic_section_z=64.08 * (10**3),
+        thickness_web=3,
+        radius=4,
     )
 
     buckling = ReductionBucklingFactorsRHS(buckling_factor=1, profile=profil)
 
     # 80x60x5
     obiekt = CalculationRHS(
-        sectional_axial_force=100,
-        sectional_bending_moment_y=6.25,
+        sectional_axial_force=-50,
+        sectional_bending_moment_y=5,
         sectional_bending_moment_z=0,
         sectional_shear_y=0,
-        sectional_shear_z=70,
+        sectional_shear_z=0,
         eccentricity_y=0,
         eccentricity_z=0,
         gammas=gammas_country,
@@ -488,8 +333,8 @@ if __name__ == "__main__":
         # obiekt.check_bending_y(),
         # obiekt.reduced_bending_capacity_y(),
         # obiekt.kyy(),
-        # obiekt.kzy(),
-        obiekt.check_interaction_buckling_and_bending(),
-        # obiekt.check_tension_profile(),
+        obiekt.check_class(),
+        # obiekt.check_interaction_buckling_and_bending(),
+        obiekt.check_tension_profile(),
         # obiekt.deflection_bending_y(),
     )
