@@ -1,12 +1,15 @@
 # Create your views here.
-from bars_calculation.forms import CalculationRhsForm
 from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic import FormView
 
+from bars_calculation.forms import CalculationRhsForm
+
 from .calculation import (
     CalculationRHS,
     CountryFactors,
+    CrossSectionClass,
+    ForceToCalculation,
     ProfileRhsToCalculation,
     ReductionBucklingFactorsRHS,
     SteelGrade,
@@ -62,25 +65,39 @@ class CalculationRhsView(FormView):
             length=value_length_profile,
             plastic_section_y=profile.Wply,
             plastic_section_z=profile.Wplz,
+            radius=profile.r1,
         )
 
-        buckling_factor_to_calculate = ReductionBucklingFactorsRHS(
-            buckling_factor=value_buckling_factor, profile=profile_to_calculation
-        )
-
-        calculation = CalculationRHS(
-            sectional_axial_force=abs(value_axial_force),
+        forces = ForceToCalculation(
+            sectional_axial_force=value_axial_force,
             sectional_bending_moment_y=value_bending_moment_y,
             sectional_bending_moment_z=value_bending_moment_z,
             sectional_shear_y=value_shear_force_y,
             sectional_shear_z=value_shear_force_z,
             eccentricity_y=value_eccentricity_y,
             eccentricity_z=value_eccentricity_z,
+            main_axis="z",
+            profile=profile_to_calculation,
+        )
+
+        buckling_factor_to_calculate = ReductionBucklingFactorsRHS(
+            buckling_factor=value_buckling_factor, profile=profile_to_calculation
+        )
+
+        cross_section_class = CrossSectionClass(
+            main_axis="z",
+            sectional_force=forces,
+            profile=profile_to_calculation,
+        )
+
+        calculation = CalculationRHS(
+            sectional_forces=forces,
             gammas=gammas_country,
             limit_deformation=value_limit_deformation,
             main_axis="z",
             profile=profile_to_calculation,
             buckling_factor=buckling_factor_to_calculate,
+            section_class=cross_section_class.check_class(),
         )
 
         if value_axial_force >= 0:
@@ -113,25 +130,39 @@ class CalculationRhsView(FormView):
                 length=value_length_profile,
                 plastic_section_y=searched_profile.Wply,
                 plastic_section_z=searched_profile.Wplz,
+                radius=searched_profile.r1,
             )
 
-            temp_buckling_factor_to_calculate = ReductionBucklingFactorsRHS(
-                buckling_factor=value_buckling_factor, profile=temp_profile
-            )
-
-            temp_calculation = CalculationRHS(
-                sectional_axial_force=abs(value_axial_force),
+            temp_forces = ForceToCalculation(
+                sectional_axial_force=value_axial_force,
                 sectional_bending_moment_y=value_bending_moment_y,
                 sectional_bending_moment_z=value_bending_moment_z,
                 sectional_shear_y=value_shear_force_y,
                 sectional_shear_z=value_shear_force_z,
                 eccentricity_y=value_eccentricity_y,
                 eccentricity_z=value_eccentricity_z,
+                main_axis="z",
+                profile=temp_profile,
+            )
+
+            temp_buckling_factor_to_calculate = ReductionBucklingFactorsRHS(
+                buckling_factor=value_buckling_factor, profile=temp_profile
+            )
+
+            temp_cross_section_class = CrossSectionClass(
+                main_axis="z",
+                sectional_force=temp_forces,
+                profile=temp_profile,
+            )
+
+            temp_calculation = CalculationRHS(
+                sectional_forces=temp_forces,
                 gammas=gammas_country,
                 limit_deformation=value_limit_deformation,
                 main_axis="z",
                 profile=temp_profile,
                 buckling_factor=temp_buckling_factor_to_calculate,
+                section_class=temp_cross_section_class.check_class(),
             )
 
             if value_axial_force >= 0:

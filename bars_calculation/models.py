@@ -89,6 +89,7 @@ class CalculationRhs(models.Model):
     steel = models.CharField(
         choices=[("S235", "S235"), ("S275", "S275"), ("S355", "S355")]
     )
+
     axial_force = models.FloatField()
     eccentricity_y = models.FloatField()
     eccentricity_z = models.FloatField()
