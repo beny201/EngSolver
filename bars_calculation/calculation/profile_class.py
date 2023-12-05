@@ -47,7 +47,7 @@ class CrossSectionClass:
                 (-1, 2): (42 * self.profile.epsilon) / (0.67 + 0.33 * self.psi),
                 (-1, 3): (62 * self.profile.epsilon)
                 * (1 - self.psi)
-                * math.sqrt(-self.psi),
+                * math.sqrt(abs(self.psi)),
             }
         }
 
