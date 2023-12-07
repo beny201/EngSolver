@@ -195,13 +195,19 @@ class CalculationRHS:
 
     def kyy(self) -> float:
         ur_y = self.check_buckling_y()
-        fyy = min(self.buckling_factor.lambda_relative_slenderness_y() - 0.2, 0.8)
+        if self.section_class < 3:
+            fyy = min(self.buckling_factor.lambda_relative_slenderness_y() - 0.2, 0.8)
+        else:
+            fyy = min(self.buckling_factor.lambda_relative_slenderness_y() * 0.6, 0.6)
         kyy = self.Cmy() * (1 + fyy * ur_y)
         return kyy
 
     def kzz(self) -> float:
         ur_z = self.check_buckling_z()
-        fzz = min(self.buckling_factor.lambda_relative_slenderness_z() - 0.2, 0.8)
+        if self.section_class < 3:
+            fzz = min(self.buckling_factor.lambda_relative_slenderness_z() - 0.2, 0.8)
+        else:
+            fzz = min(self.buckling_factor.lambda_relative_slenderness_z() * 0.6, 0.6)
         kzz = self.Cmy() * (1 + fzz * ur_z)
         return kzz
 
