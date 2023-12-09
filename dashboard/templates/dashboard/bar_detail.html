@@ -15,34 +15,91 @@
         <tr>
             <th scope="row">\[N_{ed}=\]</th>
             <td>{{ bar.axial_force }} kN</td>
-            <th scope="row">\[e=\]</th>
-            <td>{{ bar.eccentricity }} mm</td>
-            <th scope="row">\[M_{ed}=\]</th>
-            <td>{{ bar.bending_moment }} kNm</td>
-            <th scope="row">\[L=\]</th>
-            <td>{{ bar.length_profile }} m</td>
-            <th scope="row">\[\frac{1}{x}=\]</th>
-            <td>{{ bar.limit_deformation }}</td>
-            <th scope="row">\[Steel=\]</th>
-            <td>{{ bar.steel }}</td>
+            <th scope="row">\[M_{ed,y}=\]</th>
+            <td>{{ bar.bending_moment_y }} kNm</td>
+            <th scope="row">\[M_{ed,z}=\]</th>
+            <td>{{ bar.bending_moment_z }} kNm</td>
+            <th scope="row">\[V_{ed,y}=\]</th>
+            <td>{{ bar.shear_force_y }} kN</td>
+            <th scope="row">\[V_{ed,z}=\]</th>
+            <td>{{ bar.shear_force_z }} kN</td>
+            <th scope="row">\[e_{z}=\]</th>
+            <td>{{ bar.eccentricity_y }} mm</td>
+            <th scope="row">\[e_{y}=\]</th>
+            <td>{{ bar.eccentricity_z }} mm</td>
+
+        </tr>
+        <tr>
             <th scope="row">\[\ Country= \]</th>
             <td>{{ bar.country }}</td>
+            <th scope="row">\[L=\]</th>
+            <td>{{ bar.length_profile }} m</td>
+            <th scope="row">\[\mu =\]</th>
+            <td>{{ bar.buckling_factor }}</td>
+            <th scope="row">\[curve=\]</th>
+            <td>{{ bar.detailed.buckling_curve }}</td>
+            <th scope="row">\[Steel=\]</th>
+            <td>{{ bar.steel }}</td>
+            <th scope="row">\[\frac{1}{x}=\]</th>
+            <td>{{ bar.limit_deformation }}</td>
+
         </tr>
         <tr>
             <th scope="row">\[Profile=\]</th>
             <td>{{ bar.profile.name }}</td>
+            <th scope="row">\[Section class=\]</th>
+            <td>{{ bar.detailed.section_class }}</td>
+        </tr>
+        <tr>
             <th scope="row">\[A=\]</th>
             <td>{{ bar.profile.A }} mm^2</td>
             <th scope="row">\[I_{y}=\]</th>
             <td>{{ bar.profile.Iy }} mm^4</td>
             <th scope="row">\[i_{y}=\]</th>
-            <td>{{ bar.detailed.profile_radius_gyration|floatformat:2 }} mm</td>
-            <th scope="row">\[W_{ply}=\]</th>
+            <td>{{ bar.detailed.profile_radius_gyration_y|floatformat:2 }} mm^4</td>
+            <th scope="row">\[I_{z}=\]</th>
+            <td>{{ bar.profile.Iz }} mm^4</td>
+            <th scope="row">\[i_{z}=\]</th>
+            <td>{{ bar.detailed.profile_radius_gyration_z|floatformat:2 }} mm</td>
+            <th scope="row">\[A_{v,y}=\]</th>
+            <td>{{ bar.detailed.profile_shear_area_y|floatformat:2}} mm^2</td>
+        </tr>
+        <tr>
+            <th scope="row">\[A_{v,z}=\]</th>
+            <td>{{ bar.detailed.profile_shear_area_z|floatformat:2}} mm^2</td>
+            <th scope="row">\[W_{el,y}=\]</th>
+            <td>{{ bar.detailed.profile_elastic_section_y|floatformat:2 }} mm^3</td>
+            <th scope="row">\[W_{el,z}=\]</th>
+            <td>{{ bar.detailed.profile_elastic_section_z|floatformat:2}} mm^3</td>
+            <th scope="row">\[W_{pl,y}=\]</th>
             <td>{{ bar.profile.Wply }} mm^3</td>
-            <th scope="row">\[curve[c]=\]</th>
-            <td>{{ bar.detailed.buckling_curve }}</td>
-            <th scope="row">\[\mu =\]</th>
-            <td>{{ bar.detailed.buckling_factor }}</td>
+            <th scope="row">\[W_{pl,z}=\]</th>
+            <td>{{ bar.profile.Wplz }} mm^3</td>
+        </tr>
+        <tr>
+            <th scope="row">\[Capacity\]</th>
+        </tr>
+        <tr>
+            <th scope="row">\[V_{pl,Rd,y}=\]</th>
+            <td>{{ bar.detailed.shear_capacity_y|floatformat:2 }} kN</td>
+            <th scope="row">\[V_{pl,Rd,z}=\]</th>
+            <td>{{ bar.detailed.shear_capacity_z|floatformat:2 }} kN</td>
+            <th scope="row">\[N_{pl,Rd}=\]</th>
+            <td>{{ bar.detailed.tension_profile|floatformat:2 }} kN</td>
+            <th scope="row">\[M_{c,Rd,y}=\]</th>
+            <td>{{ bar.detailed.bending_capacity_profile_y|floatformat:2 }} kNm</td>
+            <th scope="row">\[M_{c,Rd,z}=\]</th>
+            <td>{{ bar.detailed.bending_capacity_profile_z|floatformat:2 }} kNm</td>
+        </tr>
+        <tr>
+            <th scope="row">\[M_{n,y,Rd}=\]</th>
+            <td>{{ bar.detailed.reduced_bending_capacity_y|floatformat:2 }} kNm</td>
+            <th scope="row">\[M_{n,z,Rdz}=\]</th>
+            <td>{{ bar.detailed.reduced_bending_capacity_z|floatformat:2 }} kNm</td>
+            <th scope="row">\[N_{b,Rd,y}=\]</th>
+            <td>{{ bar.detailed.compression_capacity_y|floatformat:2 }} kN</td>
+            <th scope="row">\[N_{b,Rd,z}=\]</th>
+            <td>{{ bar.detailed.compression_capacity_z|floatformat:2 }} kN</td>
         </tr>
     </table>
 </div>
@@ -60,59 +117,110 @@
         <td>{{ bar.detailed.epsilon|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ \lambda_{1} = \frac{L_{cr}}{i_{y}} \]</th>
+        <th scope="row">\[ \lambda_{1} = 93.3 * epsilon \]</th>
         <td>{{ bar.detailed.lambda_slenderness_1|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ \overline\lambda = \frac{L_{cr}}{i}\times\frac{1}{\lambda_{1}} \]</th>
-        <td>{{ bar.detailed.lambda_relative_slenderness|floatformat:2 }}</td>
+        <th scope="row">\[ \overline\lambda_{y} = \frac{L_{cr}}{i_{y}}\times\frac{1}{\lambda_{1}} \]</th>
+        <td>{{ bar.detailed.lambda_relative_slenderness_y|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ \theta=0,5\times \left[1 + \alpha\left(\overline\lambda -
-            0,2\right)+\overline\lambda^{2}\right] \]
+        <th scope="row">\[ \overline\lambda_{z} = \frac{L_{cr}}{i_{z}}\times\frac{1}{\lambda_{1}} \]</th>
+        <td>{{ bar.detailed.lambda_relative_slenderness_z|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ \theta_{y}=0,5\times \left[1 + \alpha\left(\overline\lambda_{y} -
+            0,2\right)+\overline\lambda_{y}^{2}\right] \]
         </th>
-        <td>{{ bar.detailed.theta_reduction_factor|floatformat:2 }}</td>
+        <td>{{ bar.detailed.theta_reduction_factor_y|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ \chi=\frac{1}{\theta+\sqrt{\theta^{2}-\overline\lambda^{2}}} \]</th>
-        <td>{{ bar.detailed.chi_reduction_factor|floatformat:2 }}</td>
+        <th scope="row">\[ \theta_{z}=0,5\times \left[1 + \alpha\left(\overline\lambda_{z} -
+            0,2\right)+\overline\lambda_{z}^{2}\right] \]
+        </th>
+        <td>{{ bar.detailed.theta_reduction_factor_z|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ N_{t,Rd}=\frac{ A \times f_{y}}{\gamma_{m1}} \]</th>
-        <td>{{ bar.detailed.tension_capacity|floatformat:2 }} kN</td>
+        <th scope="row">\[ \chi_{y}=\frac{1}{\theta_{y}+\sqrt{\theta_{y}^{2}-\overline\lambda_{y}^{2}}} \]</th>
+        <td>{{ bar.detailed.chi_reduction_factor_y|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ N_{b,Rd}=\frac{\chi\times A \times f_{y}}{\gamma_{m1}} \]</th>
-        <td>{{ bar.detailed.compression_capacity|floatformat:2 }} kN</td>
+        <th scope="row">\[ \chi_{z}=\frac{1}{\theta_{z}+\sqrt{\theta_{z}^{2}-\overline\lambda_{z}^{2}}} \]</th>
+        <td>{{ bar.detailed.chi_reduction_factor_z|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ N_{b,Rd}=\frac{\chi\times A \times f_{y}}{\gamma_{m1}} \]</th>
-        <td>{{ bar.detailed.compression_capacity|floatformat:2 }} kN</td>
+        <th scope="row">\[ N_{pl,Rd}=\frac{ A \times f_{y}}{\gamma_{m0}} \]</th>
+        <td>{{ bar.detailed.tension_profile|floatformat:2 }} kN</td>
     </tr>
     <tr>
-        <th scope="row">\[ M_{total} = M_{ed}+ M_{g}+M_{ecc} \]</th>
-        <td>{{ bar.detailed.total_bending|floatformat:2 }} kNm</td>
+        <th scope="row">\[ N_{b,Rd,y}=\frac{\chi_{y}\times A \times f_{y}}{\gamma_{m1}} \]</th>
+        <td>{{ bar.detailed.compression_capacity_y|floatformat:2 }} kN</td>
     </tr>
     <tr>
-        <th scope="row">\[ M_{y,Crd} = \frac{W_{ply}\times f_{y}}{\gamma_{m1}} \]</th>
-        <td>{{ bar.detailed.bending_capacity|floatformat:2 }} kNm</td>
+        <th scope="row">\[ N_{b,Rd,z}=\frac{\chi_{z}\times A \times f_{y}}{\gamma_{m1}} \]</th>
+        <td>{{ bar.detailed.compression_capacity_y|floatformat:2 }} kN</td>
     </tr>
     <tr>
-        <th scope="row">\[ f_{total} = f_{ed}+ f_{g}+f_{ecc} \]</th>
-        <td>{{ bar.detailed.total_deflection|floatformat:2 }} mm</td>
+        <th scope="row">\[ U=\frac{ N_{ed} } {N_{b,Rd}}\]</th>
+        <td>{{ bar.detailed.check_total_buckling|floatformat:2 }}</td>
     </tr>
     <tr>
-        <th scope="row">\[ U_{rT}=\frac{ N_{ed}}{N_{t,rd}}+\frac{ M_{total}}{M_{y,Crd}} \]</th>
-        <td>{{ bar.utilization_tension|floatformat:2 }}</td>
+        <th scope="row">\[ M_{c,Rrd,y} = \frac{W_{pl,y}\times f_{y}}{\gamma_{m0}} \]</th>
+        <td>{{ bar.detailed.bending_capacity_profile_y|floatformat:2 }} kNm</td>
     </tr>
     <tr>
-        <th scope="row">\[ U_{rD}=\frac{ N_{ed}}{N_{R,rd}}+\frac{ M_{total}}{M_{y,Crd}} \]</th>
-        <td>{{ bar.utilization_compression|floatformat:2 }}</td>
+        <th scope="row">\[ M_{c,Rrd,z} = \frac{W_{pl,z}\times f_{y}}{\gamma_{m0}} \]</th>
+        <td>{{ bar.detailed.bending_capacity_profile_z|floatformat:2 }} kNm</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ U = \left[ \frac{ M_{y,Ed}}{M_{N,y,Ed}}\right]^{\alpha} + \left[ \frac{
+            M_{z,Ed}}{M_{N,z,Ed}}\right]^{\beta} \]
+        </th>
+        <td>{{ bar.detailed.check_total_bending|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ C_{my} = \]</th>
+        <td>{{ bar.detailed.Cmy|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ k_{yy} = \]</th>
+        <td>{{ bar.detailed.kyy|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ k_{zz} = \]</th>
+        <td>{{ bar.detailed.kzz|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ k_{zy} = \]</th>
+        <td>{{ bar.detailed.kzy|floatformat:2 }}</td>
+    </tr>
+    <tr>
+        <th scope="row">\[ k_{yz} = \]</th>
+        <td>{{ bar.detailed.kyz|floatformat:2 }}</td>
+    </tr>
+
+    <tr>
+        <th scope="row">\[U =
+            \left(\begin{array}{c}\frac{N_{ed}}{\frac{\chi_{y}N_{Rk}}{\gamma_{m1}}}+
+
+            k_{yy}\times\frac{M_{y,Ed}}{\frac{M_{y,Rk}}{\gamma_{m1}}}
+            +
+            k_{yz}\times\frac{M_{z,Ed}}{\frac{M_{z,Rk}}{\gamma_{m1}}}
+            \\ \frac{N_{ed}}{\frac{\chi_{z}N_{Rk}}{\gamma_{m1}}}+
+
+            k_{zy}\times\frac{M_{y,Ed}}{\frac{M_{y,Rk}}{\gamma_{m1}}}
+            +
+            k_{zz}\times\frac{M_{z,Ed}}{\frac{M_{z,Rk}}{\gamma_{m1}}}
+            \end{array}\right)
+            \]
+        </th>
+        <td>{{ bar.detailed.check_interaction_buckling_and_bending|floatformat:2 }}</td>
     </tr>
     <tr>
         <th scope="row">\[ U_{f}=\frac{ f_{total}}{f_{limit}} \]</th>
-        <td>{{ bar.utilization_deformation|floatformat:2 }}</td>
+        <td>{{ bar.detailed.check_deformation|floatformat:2 }}</td>
     </tr>
+
     </tbody>
 </table>
 

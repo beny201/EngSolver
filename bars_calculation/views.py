@@ -25,7 +25,7 @@ class CalculationRhsView(FormView):
     template_name_detailed = "bars_calculation/bar_detailed.html"
 
     title = "Bars calculation"
-    connection_type = "Cold formed - SHS checker"
+    connection_type = "Design RHS, SHS checker"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -210,6 +210,7 @@ class CalculationRhsView(FormView):
                 profile_elastic_section_z=profile_to_calculation.Wely,
                 profile_shear_area_y=profile_to_calculation.Ay,
                 profile_shear_area_z=profile_to_calculation.Az,
+                section_class=cross_section_class.check_class(),
                 shear_capacity_y=calculation.shear_capacity_y(),
                 shear_capacity_z=calculation.shear_capacity_z(),
                 reduction_due_shear=calculation.reduction_due_shear(),
