@@ -5,7 +5,6 @@ import forallpeople as si
 
 from .force_to_calculation import ForceToCalculation
 from .profile_to_calculation import ProfileRhsToCalculation
-from .structural_parameters import SteelGrade
 
 # from bars_calculation.calculation import ForceToCalculation, ProfileRhsToCalculation, SteelGrade
 
@@ -110,50 +109,12 @@ class CrossSectionClass:
         return 4
 
     def check_class(self) -> int:
+        Ga = self.force.Ned_stress / self.profile.A
+        Gy = self.force.Med_y / self.profile.Wely
+        Gz = self.force.Med_z / self.profile.Welz
+        G_1 = Ga - Gy - Gz
         web = self.web_compression_classification_class()
-        if self.force.Ned_stress < 0:
+        if self.force.Ned_stress < 0 or G_1 < 0:
             flange = self.flange_check_class()
             return max(web, flange)
         return web
-
-
-if __name__ == "__main__":
-    steel = SteelGrade()
-    steel_grade = steel.finding_steel("S355")
-
-    profil = ProfileRhsToCalculation(
-        type_profile='CF',
-        sectional_area=18.36 * (10**2),
-        height_profile=120,
-        width_profile=120,
-        thickness_flange=4,
-        second_moment_area_y=271 * (10**4),
-        second_moment_area_z=271 * (10**4),
-        yield_strength=steel_grade,
-        length=5,
-        plastic_section_y=64.08 * (10**3),
-        plastic_section_z=64.08 * (10**3),
-        radius=4,
-    )
-
-    force = ForceToCalculation(
-        sectional_axial_force=-50,
-        sectional_bending_moment_y=1,
-        sectional_bending_moment_z=0,
-        sectional_shear_y=0,
-        sectional_shear_z=0,
-        eccentricity_y=0,
-        eccentricity_z=0,
-        main_axis="z",
-        profile=profil,
-    )
-
-    obiekt = CrossSectionClass(
-        main_axis="z",
-        force=force,
-        profile=profil,
-    )
-
-    print(
-        obiekt.check_class(),
-    )
