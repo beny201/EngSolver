@@ -25,8 +25,8 @@ class ForceToCalculation:
         self.profile = profile
         self.main_axis = main_axis
         self.Ned = abs(sectional_axial_force) * si.kN
-        self.Med_y = sectional_bending_moment_y * si.kN * si.m
-        self.Med_z = sectional_bending_moment_z * si.kN * si.m
+        self.Med_y_ph = sectional_bending_moment_y * si.kN * si.m
+        self.Med_z_ph = sectional_bending_moment_z * si.kN * si.m
         self.Ved_z = sectional_shear_z * si.kN
         self.Ved_y = sectional_shear_y * si.kN
         self.ecc_y = eccentricity_y * si.mm
@@ -48,14 +48,14 @@ class ForceToCalculation:
         return self.Ned * self.ecc_z
 
     def total_bending_my(self) -> float:
-        Med_y = self.bending_from_eccentricity_y() + self.Med_y
+        Med_y = self.bending_from_eccentricity_y() + self.Med_y_ph
         if self.main_axis == "z":
             return Med_y + self.bending_from_self_weight()
         else:
             return Med_y
 
     def total_bending_mz(self) -> float:
-        Med_z = self.bending_from_eccentricity_z() + self.Med_z
+        Med_z = self.bending_from_eccentricity_z() + self.Med_z_ph
         if self.main_axis == "y":
             return Med_z + self.bending_from_self_weight()
         else:
