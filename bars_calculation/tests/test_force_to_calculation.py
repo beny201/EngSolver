@@ -53,8 +53,8 @@ class TestForceToCalculation:
 
     def test_should_return_Medy_with_kNm_and_self_weight(self, set_object):
         expected_force = 1453
-        expected_Med_y = set_object.total_bending_my().split()[0]
-        assert expected_Med_y == pytest.approx(expected_force, rel=2e-2)
+        Med_y = set_object.total_bending_my().split()[0]
+        assert Med_y == pytest.approx(expected_force, rel=2e-2)
 
     def test_should_return_Medz_with_kNm(self, set_object):
         expected_force = 1 * si.kN * si.m
@@ -74,8 +74,8 @@ class TestForceToCalculation:
         mock_data = 10 * si.mm
         mocker.patch.object(set_object, 'ecc_y', mock_data)
         expected_force = 1453 + 500
-        expected_Med_y = set_object.total_bending_my().split()[0]
-        assert expected_Med_y == pytest.approx(expected_force, rel=2e-2)
+        Med_y = set_object.total_bending_my().split()[0]
+        assert Med_y == pytest.approx(expected_force, rel=2e-2)
 
     def test_should_return_bending_bending_from_eccentricity_z(
         self, set_object, mocker
@@ -92,5 +92,5 @@ class TestForceToCalculation:
         mock_data = "y"
         mocker.patch.object(set_object, 'main_axis', mock_data)
         expected_force = 1000
-        expected_Med_y = set_object.total_bending_my().split()[0]
-        assert expected_Med_y == pytest.approx(expected_force, rel=2e-2)
+        Med_y = set_object.total_bending_my().split()[0]
+        assert Med_y == pytest.approx(expected_force, rel=2e-2)
