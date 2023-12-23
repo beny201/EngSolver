@@ -45,35 +45,35 @@ class ProfileRhsToCalculation:
         self.Wely = self.elastic_section_y()
         self.Welz = self.elastic_section_z()
         self.R = radius * si.mm
-        self.epsilon = self.epsilon()
+        self.epsilon = self.check_epsilon()
 
     def weight_per_m(self) -> float:
         return self.A * SteelGrade().WEIGHT
 
-    def radius_of_gyration_iy(self):
+    def radius_of_gyration_iy(self) -> float:
         iy = self.Iy / self.A
         return math.sqrt(iy) * si.mm
 
-    def radius_of_gyration_iz(self):
+    def radius_of_gyration_iz(self) -> float:
         iz = self.Iz / self.A
         return math.sqrt(iz) * si.mm
 
-    def shear_area_z(self):
+    def shear_area_z(self) -> float:
         Az = (self.A * self.H) / (self.B + self.H)
         return Az
 
-    def shear_area_y(self):
+    def shear_area_y(self) -> float:
         Ay = (self.A * self.B) / (self.B + self.H)
         return Ay
 
-    def elastic_section_y(self):
+    def elastic_section_y(self) -> float:
         Wely = self.Iy / (self.H / 2)
         return Wely
 
-    def elastic_section_z(self):
+    def elastic_section_z(self) -> float:
         Welz = self.Iz / (self.B / 2)
         return Welz
 
-    def epsilon(self) -> float:
+    def check_epsilon(self) -> float:
         yield_strength = self.Fy / si.MPa
         return math.sqrt(235 / yield_strength)
