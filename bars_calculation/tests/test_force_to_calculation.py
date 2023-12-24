@@ -30,9 +30,9 @@ def set_object():
     force = ForceToCalculation(
         sectional_axial_force=-50,
         sectional_bending_moment_y=1,
-        sectional_bending_moment_z=1,
+        sectional_bending_moment_z=2,
         sectional_shear_y=10,
-        sectional_shear_z=10,
+        sectional_shear_z=20,
         eccentricity_y=0,
         eccentricity_z=0,
         main_axis=main_axis_calc,
@@ -57,11 +57,11 @@ class TestForceToCalculation:
         assert Med_y == pytest.approx(expected_force, rel=2e-2)
 
     def test_should_return_Medz_with_kNm(self, set_object):
-        expected_force = 1 * si.kN * si.m
+        expected_force = 2 * si.kN * si.m
         assert set_object.Med_z == expected_force
 
     def test_should_return_Vedz_with_kN(self, set_object):
-        expected_force = 10 * si.kN
+        expected_force = 20 * si.kN
         assert set_object.Ved_z == expected_force
 
     def test_should_return_Vedy_with_kN(self, set_object):
@@ -82,7 +82,7 @@ class TestForceToCalculation:
     ):
         mock_data = 10 * si.mm
         mocker.patch.object(set_object, 'ecc_z', mock_data)
-        expected_force = 1500
+        expected_force = 2500
         expected_Med_y = set_object.total_bending_mz().split()[0]
         assert expected_Med_y == pytest.approx(expected_force, rel=2e-2)
 
