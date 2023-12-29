@@ -24,8 +24,8 @@ class ReductionBucklingFactorsRHS:
         self.epsilon = self.profile.epsilon
         self.buckling_length = self.buckling_length()
         self.lambda_slenderness_1 = self.lambda_slenderness_1()
-        self.chi_reduction_factor_y = self.chi_reduction_factor_y()
-        self.chi_reduction_factor_z = self.chi_reduction_factor_z()
+        self.chi_reduction_factor_y = self._chi_reduction_factor_y()
+        self.chi_reduction_factor_z = self._chi_reduction_factor_z()
 
     def lambda_slenderness_1(self) -> float:
         return math.pi * (math.sqrt((self.E / self.profile.Fy)))
@@ -47,7 +47,7 @@ class ReductionBucklingFactorsRHS:
             + (self.lambda_relative_slenderness_y() ** 2)
         )
 
-    def chi_reduction_factor_y(self) -> float:
+    def _chi_reduction_factor_y(self) -> float:
         chi = 1 / (
             self.theta_reduction_factor_y()
             + math.sqrt(
@@ -71,7 +71,7 @@ class ReductionBucklingFactorsRHS:
             + (self.lambda_relative_slenderness_z() ** 2)
         )
 
-    def chi_reduction_factor_z(self) -> float:
+    def _chi_reduction_factor_z(self) -> float:
         chi = 1 / (
             self.theta_reduction_factor_z()
             + math.sqrt(

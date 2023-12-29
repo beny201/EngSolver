@@ -6,7 +6,7 @@ import forallpeople as si
 from .buckling_parameters import ReductionBucklingFactorsRHS
 from .force_to_calculation import ForceToCalculation
 from .profile_to_calculation import ProfileRhsToCalculation
-from .structural_parameters import CountryFactors, SteelGrade
+from .structural_parameters import SteelGrade
 
 si.environment('structural', top_level=False)
 
@@ -94,7 +94,7 @@ class CalculationRHS:
         return self.Wply * self.profile.Fy / self.ym0
 
     def bending_capacity_profile_z(self) -> float:
-        return self.Wply * self.profile.Fy / self.ym0
+        return self.Wplz * self.profile.Fy / self.ym0
 
     def reduction_bending_capacity_factors(self) -> tuple[float, float]:
         n = self.force.Ned / self.tension_profile()
@@ -288,59 +288,3 @@ class CalculationRHS:
             ur3,
             ur4,
         )
-
-
-if __name__ == "__main__":
-    gammas = CountryFactors()
-    gammas_country = gammas.finding_gammas("Sweden")
-    steel = SteelGrade()
-    steel_grade = steel.finding_steel("S355")
-
-    profil = ProfileRhsToCalculation(
-        type_profile='CF',
-        sectional_area=18.36 * (10**2),
-        height_profile=80,
-        width_profile=60,
-        thickness_flange=5,
-        second_moment_area_y=271 * (10**4),
-        second_moment_area_z=271 * (10**4),
-        yield_strength=steel_grade,
-        length=5,
-        plastic_section_y=64.08 * (10**3),
-        plastic_section_z=64.08 * (10**3),
-        thickness_web=3,
-        radius=4,
-    )
-
-    buckling = ReductionBucklingFactorsRHS(buckling_factor=1, profile=profil)
-
-    # 80x60x5
-    obiekt = CalculationRHS(
-        sectional_axial_force=-50,
-        sectional_bending_moment_y=5,
-        sectional_bending_moment_z=0,
-        sectional_shear_y=0,
-        sectional_shear_z=0,
-        eccentricity_y=0,
-        eccentricity_z=0,
-        gammas=gammas_country,
-        limit_deformation=200,
-        main_axis="z",
-        profile=profil,
-        buckling_factor=buckling,
-    )
-
-    print(
-        # buckling.lambda_relative_slenderness_y(),
-        # obiekt.compression_capacity_y(),
-        # obiekt.check_total_buckling(),
-        # obiekt.check_total_buckling(),
-        # obiekt.bending_capacity_y(),
-        # obiekt.check_bending_y(),
-        # obiekt.reduced_bending_capacity_y(),
-        # obiekt.kyy(),
-        obiekt.check_class(),
-        # obiekt.check_interaction_buckling_and_bending(),
-        obiekt.check_tension_profile(),
-        # obiekt.deflection_bending_y(),
-    )
