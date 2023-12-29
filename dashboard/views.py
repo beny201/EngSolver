@@ -1,9 +1,9 @@
-from bars_calculation.models import CalculationRhs
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
+from bars_calculation.models import CalculationRhs
 from dashboard.forms import SearchedValues
 from distance_checker.models import Corner, Ridge
 
