@@ -1,11 +1,27 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from bars_calculation.models import CalculationRhs
 from dashboard.forms import SearchedValues
 from distance_checker.models import Corner, Ridge
+
+
+class UserNeedToBeAuthor(UserPassesTestMixin):
+    login_url = "login"
+
+    def test_func(self):
+        checked_object = self.get_object()
+        return checked_object.author == self.request.user
+
+    # # pomimo usawienia globalnego nie przekierowalo bez handlera?
+    def handle_no_permission(self):
+        if self.raise_exception:
+            raise PermissionDenied(self.get_permission_denied_message())
+        return redirect('login')
 
 
 class CalculationsView(LoginRequiredMixin, TemplateView):
@@ -56,13 +72,13 @@ class CornerCalculationView(LoginRequiredMixin, ListView):
         return queryset_main
 
 
-class CornerDetailedView(LoginRequiredMixin, DetailView):
+class CornerDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
     model = Corner
     context_object_name = "corner"
     template_name = 'dashboard/corner_detail.html'
 
 
-class CornerDeleteView(LoginRequiredMixin, DeleteView):
+class CornerDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
     model = Corner
     context_object_name = "corner"
     template_name = 'dashboard/delete_confirm.html'
@@ -102,17 +118,20 @@ class RidgeCalculationView(LoginRequiredMixin, ListView):
         return queryset_main
 
 
-class RidgeDetailedView(LoginRequiredMixin, DetailView):
+class RidgeDetailedView(LoginRequiredMixin, DetailView, UserPassesTestMixin):
     model = Ridge
     context_object_name = "ridge"
     template_name = 'dashboard/ridge_detail.html'
 
 
-class RidgeDeleteView(LoginRequiredMixin, DeleteView):
+class RidgeDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
     model = Ridge
     context_object_name = "ridge"
     template_name = 'dashboard/delete_confirm.html'
     success_url = reverse_lazy('dashboard')
+
+    def test_func(self):
+        return self.get_object().author_id == self.request.user.pk
 
 
 class BarCalculationView(LoginRequiredMixin, ListView):
@@ -148,13 +167,13 @@ class BarCalculationView(LoginRequiredMixin, ListView):
         return queryset_main
 
 
-class BarDetailedView(LoginRequiredMixin, DetailView):
+class BarDetailedView(LoginRequiredMixin, DetailView, UserPassesTestMixin):
     model = CalculationRhs
     context_object_name = "bar"
     template_name = 'dashboard/bar_detail.html'
 
 
-class BarDeleteView(LoginRequiredMixin, DeleteView):
+class BarDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
     model = CalculationRhs
     context_object_name = "bar"
     template_name = 'dashboard/delete_confirm.html'
