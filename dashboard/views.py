@@ -78,7 +78,7 @@ class CornerDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
     template_name = 'dashboard/corner_detail.html'
 
 
-class CornerDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
+class CornerDeleteView(LoginRequiredMixin, UserNeedToBeAuthor, DeleteView):
     model = Corner
     context_object_name = "corner"
     template_name = 'dashboard/delete_confirm.html'
@@ -118,13 +118,13 @@ class RidgeCalculationView(LoginRequiredMixin, ListView):
         return queryset_main
 
 
-class RidgeDetailedView(LoginRequiredMixin, DetailView, UserPassesTestMixin):
+class RidgeDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
     model = Ridge
     context_object_name = "ridge"
     template_name = 'dashboard/ridge_detail.html'
 
 
-class RidgeDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
+class RidgeDeleteView(LoginRequiredMixin, UserNeedToBeAuthor, DeleteView):
     model = Ridge
     context_object_name = "ridge"
     template_name = 'dashboard/delete_confirm.html'
@@ -167,13 +167,13 @@ class BarCalculationView(LoginRequiredMixin, ListView):
         return queryset_main
 
 
-class BarDetailedView(LoginRequiredMixin, DetailView, UserPassesTestMixin):
+class BarDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
     model = CalculationRhs
     context_object_name = "bar"
     template_name = 'dashboard/bar_detail.html'
 
 
-class BarDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
+class BarDeleteView(LoginRequiredMixin, UserNeedToBeAuthor, DeleteView):
     model = CalculationRhs
     context_object_name = "bar"
     template_name = 'dashboard/delete_confirm.html'
