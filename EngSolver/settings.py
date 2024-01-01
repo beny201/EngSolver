@@ -46,9 +46,15 @@ INSTALLED_APPS = [
     'bootstrap5',
     'crispy_forms',
     "crispy_bootstrap5",
+    'django_filters',
 ]
 
-INSTALLED_EXTENSIONS = ['users', 'distance_checker', 'dashboard', 'bars_calculation', ]
+INSTALLED_EXTENSIONS = [
+    'users',
+    'distance_checker',
+    'dashboard',
+    'bars_calculation',
+]
 
 INSTALLED_APPS += INSTALLED_EXTENSIONS
 

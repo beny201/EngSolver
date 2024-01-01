@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
@@ -6,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from bars_calculation.models import CalculationRhs
-from dashboard.forms import SearchedValues
+from dashboard.filters import CalculationRhsFilter, CornerFilter, RidgeFilter
 from distance_checker.models import Corner, Ridge
 
 
@@ -17,7 +16,7 @@ class UserNeedToBeAuthor(UserPassesTestMixin):
         checked_object = self.get_object()
         return checked_object.author == self.request.user
 
-    # # pomimo usawienia globalnego nie przekierowalo bez handlera?
+    # # pomimo ustawienia globalnego nie przekierowalo bez handlera?
     def handle_no_permission(self):
         if self.raise_exception:
             raise PermissionDenied(self.get_permission_denied_message())
@@ -44,32 +43,19 @@ class CornerCalculationView(LoginRequiredMixin, ListView):
     model = Corner
     context_object_name = "Corners"
     paginate_by = 5
-    form_class = SearchedValues
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context["form"] = self.form_class()
-        return context
+    form_class = CornerFilter
 
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        queryset_main = queryset.filter(author=user).order_by("-created_date")
-        form = self.form_class(self.request.GET)
-        if form.is_valid():
-            if form.cleaned_data.get("case"):
-                if (
-                    queryset_main.filter(
-                        case__icontains=form.cleaned_data["case"]
-                    ).count()
-                    == 0
-                ):
-                    messages.error(self.request, "Case not found !")
-                else:
-                    return queryset_main.filter(
-                        case__icontains=form.cleaned_data["case"]
-                    )
-        return queryset_main
+        queryset_user = queryset.filter(author=user).order_by("-created_date")
+        self.filterset = self.form_class(self.request.GET, queryset_user)
+        return self.filterset.qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context["form"] = self.filterset.form
+        return context
 
 
 class CornerDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
@@ -90,32 +76,19 @@ class RidgeCalculationView(LoginRequiredMixin, ListView):
     model = Ridge
     context_object_name = "Ridges"
     paginate_by = 5
-    form_class = SearchedValues
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context["form"] = self.form_class()
-        return context
+    form_class = RidgeFilter
 
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        queryset_main = queryset.filter(author=user).order_by("-created_date")
-        form = self.form_class(self.request.GET)
-        if form.is_valid():
-            if form.cleaned_data.get("case"):
-                if (
-                    queryset_main.filter(
-                        case__icontains=form.cleaned_data["case"]
-                    ).count()
-                    == 0
-                ):
-                    messages.error(self.request, "Case not found !")
-                else:
-                    return queryset_main.filter(
-                        case__icontains=form.cleaned_data["case"]
-                    )
-        return queryset_main
+        queryset_user = queryset.filter(author=user).order_by("-created_date")
+        self.filterset = self.form_class(self.request.GET, queryset_user)
+        return self.filterset.qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context["form"] = self.filterset.form
+        return context
 
 
 class RidgeDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
@@ -139,32 +112,19 @@ class BarCalculationView(LoginRequiredMixin, ListView):
     model = CalculationRhs
     context_object_name = "calculation"
     paginate_by = 5
-    form_class = SearchedValues
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context["form"] = self.form_class()
-        return context
+    form_class = CalculationRhsFilter
 
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        queryset_main = queryset.filter(author=user).order_by("-created_date")
-        form = self.form_class(self.request.GET)
-        if form.is_valid():
-            if form.cleaned_data.get("case"):
-                if (
-                    queryset_main.filter(
-                        case__icontains=form.cleaned_data["case"]
-                    ).count()
-                    == 0
-                ):
-                    messages.error(self.request, "Case not found !")
-                else:
-                    return queryset_main.filter(
-                        case__icontains=form.cleaned_data["case"]
-                    )
-        return queryset_main
+        queryset_user = queryset.filter(author=user).order_by("-created_date")
+        self.filterset = self.form_class(self.request.GET, queryset_user)
+        return self.filterset.qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context["form"] = self.filterset.form
+        return context
 
 
 class BarDetailedView(LoginRequiredMixin, UserNeedToBeAuthor, DetailView):
