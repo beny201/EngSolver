@@ -103,9 +103,6 @@ class RidgeDeleteView(LoginRequiredMixin, UserNeedToBeAuthor, DeleteView):
     template_name = 'dashboard/delete_confirm.html'
     success_url = reverse_lazy('dashboard')
 
-    def test_func(self):
-        return self.get_object().author_id == self.request.user.pk
-
 
 class BarCalculationView(LoginRequiredMixin, ListView):
     template_name = 'dashboard/bar.html'
