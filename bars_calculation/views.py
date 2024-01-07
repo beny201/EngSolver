@@ -200,8 +200,10 @@ class CalculationRhsView(FormView):
 
             if value_axial_force >= 0:
                 del context["utilization_compression"]
+                del context["list_of_lightest_profiles_compression"]
             else:
                 del context["utilization_tension"]
+                del context["list_of_lightest_profiles_tension"]
 
             detailed_obj = DetailedCalculationRhs(
                 profile_radius_gyration_y=profile_to_calculation.iy,

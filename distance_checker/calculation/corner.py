@@ -1,5 +1,4 @@
 import math
-from typing import Union
 
 from shapely.geometry import LineString, Point
 from shapely.ops import nearest_points
@@ -16,9 +15,7 @@ class CreatingCorner:
         column_width: int,
         t_flange_column: int,
         t_plate_connection: int,
-        length_bolt: float,
         total_length_bolt: float,
-        thickness_washer: float,
         space_for_screw: float,
     ):
         start_points_x, start_points_y = self.START_POINTS
@@ -31,7 +28,6 @@ class CreatingCorner:
 
         # drawings second line bottom flange column
         line_cd = line_ab.parallel_offset(column_width, "left")
-        point_c = Point(line_cd.coords[0])
         point_d = Point(line_cd.coords[1])
 
         # drawings third line top flange
@@ -42,7 +38,6 @@ class CreatingCorner:
         # drawings forth line bottom flange
         line_fg = line_ae.parallel_offset(girder_height, "right")
 
-        point_f = Point(line_fg.coords[0])
         point_g = Point(line_fg.coords[1])
 
         # drawings line for connection
@@ -93,13 +88,11 @@ class CreatingCorner:
         # intersection of girder flange and space needed for rest of bolt from bottom mounting
         point_o = line_ij2.intersection(flange_ae)
         point_p = nearest_points(line_ah, point_o)
-        line_op = LineString([point_o, point_p[0]])
 
         # intersection of column flange and space needed for rest of bolt from top mounting
         point_r = line_ij3.intersection(flange_ab)
         point_s = nearest_points(line_ah, point_r)
 
-        line_rs = LineString([point_r, point_s[0]])
         looking_distance_top_space = point_a.distance(point_s)
 
         # drawing line of bolt when mounting from bottom

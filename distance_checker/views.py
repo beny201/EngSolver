@@ -62,8 +62,6 @@ class DistanceCornerView(FormView):
 
         total_length_bolt_value = assembly_part.total_length_bolt(searched_bolt)
 
-        thickness_washer_value = searched_washer.thickness_washer
-
         space_for_screw_value = assembly_part.space_for_screw(
             searched_bolt, t_plate_connection_value
         )
@@ -76,9 +74,7 @@ class DistanceCornerView(FormView):
                 column_width=column_width_value,
                 t_flange_column=t_flange_column_value,
                 t_plate_connection=t_plate_connection_value,
-                length_bolt=searched_bolt.length,
                 total_length_bolt=total_length_bolt_value,
-                thickness_washer=thickness_washer_value,
                 space_for_screw=space_for_screw_value,
             )
 
@@ -192,8 +188,6 @@ class DistanceRidgeView(FormView):
 
         total_length_bolt_value = assembly_part.total_length_bolt(searched_bolt)
 
-        thickness_washer_value = searched_washer.thickness_washer
-
         space_for_screw_value = assembly_part.space_for_screw(
             searched_bolt, t_plate_connection_value
         )
@@ -208,9 +202,7 @@ class DistanceRidgeView(FormView):
                 left_t_flange_girder=left_t_flange_girder_value,
                 right_t_flange_girder=right_t_flange_girder_value,
                 t_plate_connection=t_plate_connection_value,
-                length_bolt=searched_bolt.length,
                 total_length_bolt=total_length_bolt_value,
-                thickness_washer=thickness_washer_value,
                 space_for_screw=space_for_screw_value,
             )
 

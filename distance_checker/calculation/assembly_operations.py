@@ -22,7 +22,7 @@ class FindingBolt:
     def finding_thread_end(self, bolt_diameter: int) -> Union[int, float]:
         thread_end = self.THREAD_END
         for diameter, thread in thread_end.items():
-            if diameter < bolt_diameter:
+            if bolt_diameter < diameter:
                 return thread
         return 10
 

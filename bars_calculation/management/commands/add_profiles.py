@@ -2,8 +2,9 @@ import json
 import os
 from typing import Dict, List
 
-from bars_calculation.models import ProfileRhs
 from django.core.management import BaseCommand
+
+from bars_calculation.models import ProfileRhs
 
 file_name = "RTRKKpro"
 
@@ -45,16 +46,16 @@ class Command(BaseCommand):
                 name=profile['@NAME_REVIT'],
                 H=int(profile["@DIM1"]),
                 B=int(profile["@DIM2"]),
-                T=float(profile["@DIM3"].replace(",", ".")),
-                G=float(profile["@MASS"].replace(",", ".")),
-                surf=float(profile["@SURF"].replace(",", ".")),
-                r0=float(profile["@RS"].replace(",", ".")),
-                r1=float(profile["@RA"].replace(",", ".")),
-                A=float(profile["@SX"].replace(",", ".")),
-                Ix=float(profile["@IX"].replace(",", ".")),
-                Iy=float(profile["@IY"].replace(",", ".")),
-                Iz=float(profile["@IZ"].replace(",", ".")),
-                Wply=float(profile["@MSY"].replace(",", ".")),
+                T=self.__convert_to_float(profile["@DIM3"]),
+                G=self.__convert_to_float(profile["@MASS"]),
+                surf=self.__convert_to_float(profile["@SURF"]),
+                r0=self.__convert_to_float(profile["@RS"]),
+                r1=self.__convert_to_float(profile["@RA"]),
+                A=self.__convert_to_float(profile["@SX"]),
+                Ix=self.__convert_to_float(profile["@IX"]),
+                Iy=self.__convert_to_float(profile["@IY"]),
+                Iz=self.__convert_to_float(profile["@IZ"]),
+                Wply=self.__convert_to_float(profile["@MSY"]),
                 Wplz=self.__convert_to_float(profile["@MSZ"]),
             )
             new_profile.save()

@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from django.contrib.auth.models import User
-from django.test import TestCase, tag
+from django.test import TestCase
 from django.urls import reverse
 
 from bars_calculation.models import CalculationRhs, ProfileRhs
@@ -385,7 +385,6 @@ class BarCalculationViewTestCase(BaseTestCase):
         response = self.client.get(self.tested_url)
         self.assertTemplateUsed(response, 'dashboard/bar.html')
 
-    @tag("x")
     def test_calculation_bar_view_return_qty_corners_by_author(self):
         self.client.force_login(self.user)
         response = self.client.get(self.tested_url)
