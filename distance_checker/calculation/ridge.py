@@ -15,9 +15,7 @@ class CreatingRidge:
         left_t_flange_girder: int,
         right_t_flange_girder: int,
         t_plate_connection: int,
-        length_bolt: float,
         total_length_bolt: float,
-        thickness_washer: float,
         space_for_screw: float,
     ):
         start_points_x, start_points_y = self.START_POINTS
