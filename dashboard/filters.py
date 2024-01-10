@@ -5,9 +5,11 @@ from distance_checker.models import Corner, Ridge
 
 
 class CornerFilter(django_filters.FilterSet):
+    case = django_filters.CharFilter(lookup_expr='icontains', label='Case')
+
     class Meta:
         model = Corner
-        fields = {'case': ["icontains"]}
+        fields = {'case'}
 
 
 class RidgeFilter(django_filters.FilterSet):
