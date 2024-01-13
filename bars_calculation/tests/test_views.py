@@ -2,22 +2,16 @@ from http import HTTPStatus
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth.models import User
-from django.test import TestCase, tag
+from django.test import TestCase
 from django.urls import reverse
+
+from EngSolver.test import evaluate
 
 from ..models import CalculationRhs, ProfileRhs
 from .factories import ProfileRhsUseFactory
 
 
-@tag('x')
 class CalculationRhsViewTestCase(TestCase):
-    @staticmethod
-    def evaluate(value):
-        ev_1 = value * 0.99
-        ev_2 = value * 1.01
-
-        return ev_2 - ev_1
-
     def setUp(self):
         self.user = User.objects.create(
             username='testuser', password='testpass'
@@ -75,19 +69,19 @@ class CalculationRhsViewTestCase(TestCase):
 
         self.assertIn('utilization_shear', response.context)
         expected = 0.108
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         utilization_shear = response.context['utilization_shear']
         self.assertAlmostEqual(utilization_shear, expected, delta=delta)
 
         self.assertIn('utilization_tension', response.context)
         expected = 0.108
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         utilization_tension = response.context['utilization_tension']
         self.assertAlmostEqual(utilization_tension, expected, delta=delta)
 
         self.assertIn('utilization_deformation', response.context)
         expected = 0.45
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         utilization_deformation = response.context['utilization_deformation']
         self.assertAlmostEqual(utilization_deformation, expected, delta=delta)
 
@@ -104,19 +98,19 @@ class CalculationRhsViewTestCase(TestCase):
 
         self.assertIn('utilization_shear', response.context)
         expected = 0.108
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         utilization_shear = response.context['utilization_shear']
         self.assertAlmostEqual(utilization_shear, expected, delta=delta)
 
         self.assertIn('utilization_compression', response.context)
         expected = 0.461
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         utilization_compression = response.context['utilization_compression']
         self.assertAlmostEqual(utilization_compression, expected, delta=delta)
 
         self.assertIn('utilization_deformation', response.context)
         expected = 0.45
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         utilization_deformation = response.context['utilization_deformation']
         self.assertAlmostEqual(utilization_deformation, expected, delta=delta)
 

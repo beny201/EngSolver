@@ -1,16 +1,10 @@
 from django.test import TestCase
 
 from distance_checker.calculation import CreatingRidge
+from EngSolver.test import evaluate
 
 
 class CreatingRidgeTestCase(TestCase):
-    @staticmethod
-    def evaluate(value):
-        ev_1 = value * 0.99
-        ev_2 = value * 1.01
-
-        return ev_2 - ev_1
-
     def test_should_return_left_and_right_value_for_equal_parts(self):
         tested = CreatingRidge()
         tested_value = tested.creating_lines(
@@ -25,7 +19,7 @@ class CreatingRidgeTestCase(TestCase):
         )
         tested_value_left, tested_value_right = tested_value[1]
         expected = 50
-        delta = self.evaluate(expected)
+        delta = evaluate(expected)
         self.assertAlmostEqual(tested_value_left, expected, delta=delta)
         self.assertAlmostEqual(tested_value_right, expected, delta=delta)
 
@@ -44,7 +38,7 @@ class CreatingRidgeTestCase(TestCase):
         tested_value_left, tested_value_right = tested_value[1]
         expected_left = 50
         expected_right = 62
-        delta_left = self.evaluate(expected_left)
-        delta_right = self.evaluate(expected_right)
+        delta_left = evaluate(expected_left)
+        delta_right = evaluate(expected_right)
         self.assertAlmostEqual(tested_value_left, expected_left, delta=delta_left)
         self.assertAlmostEqual(tested_value_right, expected_right, delta=delta_right)
