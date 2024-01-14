@@ -120,7 +120,10 @@ class DistanceCornerView(FormView):
                 response = render_to_pdf('pdfs/connection_corner.html', data, name_pdf)
                 return response
 
-            if self.request.POST.get("save_db", ""):
+            if (
+                self.request.POST.get("save_db", "")
+                and self.request.user.is_authenticated
+            ):
                 form = CornerFormModel(self.request.POST)
                 corner = form.save(commit=False)
                 corner.author = self.request.user
@@ -226,7 +229,7 @@ class DistanceRidgeView(FormView):
                 'connection_type': self.connection_type,
             }
 
-            if self.request.POST.get("save_pdf"):
+            if self.request.POST.get("save_pdf") and self.request.user.is_authenticated:
                 current_date = datetime.now()
                 formatted_datetime = current_date.strftime("%d-%m-%Y %H:%M")
                 data = {

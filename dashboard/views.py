@@ -16,7 +16,6 @@ class UserNeedToBeAuthor(UserPassesTestMixin):
         checked_object = self.get_object()
         return checked_object.author == self.request.user
 
-    # # pomimo ustawienia globalnego nie przekierowalo bez handlera?
     def handle_no_permission(self):
         if self.raise_exception:
             raise PermissionDenied(self.get_permission_denied_message())

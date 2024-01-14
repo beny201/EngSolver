@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from django.contrib.auth.models import User
-from django.test import TestCase, tag
+from django.test import TestCase
 from django.urls import reverse
 
 from bars_calculation.models import CalculationRhs
@@ -15,7 +15,6 @@ from .factories import (
 )
 
 
-@tag("x")
 class BaseTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(
