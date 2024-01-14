@@ -10,7 +10,7 @@ class CreatingRidge:
     def creating_lines(
         self,
         left_girder_angle: float,
-        right_girder_angle: int,
+        right_girder_angle: float,
         girder_height: int,
         left_t_flange_girder: int,
         right_t_flange_girder: int,
