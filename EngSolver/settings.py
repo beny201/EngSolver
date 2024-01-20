@@ -159,7 +159,7 @@ MESSAGE_TAGS = {
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_USE_TLS = env('EMAIL_TLS')
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')

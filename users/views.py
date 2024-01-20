@@ -1,7 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import (
+    PasswordChangeView,
+    PasswordResetConfirmView,
+    PasswordResetView,
+)
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
@@ -85,6 +89,29 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     def form_valid(self, form):
         username = self.request.user
         messages.success(self.request, f"Hello {username}, password was changed !")
+        return super().form_valid(form)
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'users/change_password.html'
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Password reset link was sent to e-mail if an account exists.",
+        )
+        return super().form_valid(form)
+
+
+class CustomPasswordConfirmResetView(PasswordResetConfirmView):
+    template_name = 'users/change_password.html'
+    success_url = reverse_lazy('profile')
+    post_reset_login = True
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Password was changed')
+        login(self.request, self.user)
         return super().form_valid(form)
 
 
