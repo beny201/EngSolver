@@ -72,7 +72,7 @@ class TestForceToCalculation:
         self, set_object, mocker
     ):
         mock_data = 10 * si.mm
-        mocker.patch.object(set_object, 'ecc_y', mock_data)
+        mocker.patch.object(set_object, 'ecc_z', mock_data)
         expected_force = 1453 + 500
         Med_y = set_object.total_bending_my().split()[0]
         assert Med_y == pytest.approx(expected_force, rel=2e-2)
@@ -81,7 +81,7 @@ class TestForceToCalculation:
         self, set_object, mocker
     ):
         mock_data = 10 * si.mm
-        mocker.patch.object(set_object, 'ecc_z', mock_data)
+        mocker.patch.object(set_object, 'ecc_y', mock_data)
         expected_force = 2500
         expected_Med_y = set_object.total_bending_mz().split()[0]
         assert expected_Med_y == pytest.approx(expected_force, rel=2e-2)

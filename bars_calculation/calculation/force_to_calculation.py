@@ -42,10 +42,10 @@ class ForceToCalculation:
         return (self.load_from_self_weight() * self.profile.L**2) / 8
 
     def bending_from_eccentricity_y(self) -> float:
-        return self.Ned * self.ecc_y
+        return self.Ned * self.ecc_z
 
     def bending_from_eccentricity_z(self) -> float:
-        return self.Ned * self.ecc_z
+        return self.Ned * self.ecc_y
 
     def total_bending_my(self) -> float:
         Med_y = self.bending_from_eccentricity_y() + self.Med_y_ph
