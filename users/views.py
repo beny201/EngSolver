@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,7 +17,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import FormView, TemplateView
 
-from .forms import UserRegisterForm
+from .forms import ContactingForm, UserRegisterForm
 from .tokens import account_activation_token
 
 
@@ -36,27 +37,27 @@ def activate(request, uidb64, token):
             request,
             "Thank you for your email confirmation. Now you can login your account.",
         )
-        return redirect('register')
+        return redirect("register")
     else:
         messages.error(request, "Activation link is invalid!")
 
-    return redirect('login')
+    return redirect("login")
 
 
 class UserRegistrationView(FormView):
     form_class = UserRegisterForm
-    template_name = 'users/register.html'
+    template_name = "users/register.html"
 
     def activateEmail(self, user, to_email):
         mail_subject = "Activate your user account."
         message = render_to_string(
             "users/activate_account.html",
             {
-                'user': user.username,
-                'domain': get_current_site(self.request).domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-                "protocol": 'https' if self.request.is_secure() else 'http',
+                "user": user.username,
+                "domain": get_current_site(self.request).domain,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": account_activation_token.make_token(user),
+                "protocol": "https" if self.request.is_secure() else "http",
             },
         )
         email = EmailMessage(mail_subject, message, to=[to_email])
@@ -78,13 +79,13 @@ class UserRegistrationView(FormView):
         user = form.save(commit=False)
         user.is_active = False
         user.save()
-        self.activateEmail(user, form.cleaned_data.get('email'))
+        self.activateEmail(user, form.cleaned_data.get("email"))
         return redirect(reverse("register"))
 
 
 class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
-    template_name = 'users/change_password.html'
-    success_url = reverse_lazy('profile')
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("profile")
 
     def form_valid(self, form):
         username = self.request.user
@@ -93,8 +94,8 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 
 
 class CustomPasswordResetView(PasswordResetView):
-    template_name = 'users/change_password.html'
-    success_url = reverse_lazy('login')
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
         messages.success(
@@ -105,15 +106,40 @@ class CustomPasswordResetView(PasswordResetView):
 
 
 class CustomPasswordConfirmResetView(PasswordResetConfirmView):
-    template_name = 'users/change_password.html'
-    success_url = reverse_lazy('profile')
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("profile")
     post_reset_login = True
 
     def form_valid(self, form):
-        messages.success(self.request, 'Password was changed')
+        messages.success(self.request, "Password was changed")
         login(self.request, self.user)
         return super().form_valid(form)
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/profile.html'
+    template_name = "users/profile.html"
+
+
+class ContactView(FormView):
+    form_class = ContactingForm
+    template_name = "users/contact.html"
+    success_url = reverse_lazy("contact")
+
+    def form_valid(self, form):
+        email = form.cleaned_data.get("email")
+        subject = form.cleaned_data.get("subject")
+        message = form.cleaned_data.get("message")
+        full_message = (
+            f"Received message below from {email} \n subject: {subject} \n {message}"
+        )
+        email_to_send = settings.EMAIL_HOST_USER
+        email = EmailMessage(
+            "Received contact from site", full_message, to=[email_to_send]
+        )
+        if email.send():
+            messages.success(self.request, "E-mail was sent, thank you")
+        else:
+            messages.error(
+                self.request, "Problem sending email, please try a bit later"
+            )
+        return super().form_valid(form)

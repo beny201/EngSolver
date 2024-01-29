@@ -2,6 +2,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
 from .views import (
+    ContactView,
     CustomPasswordChangeView,
     CustomPasswordConfirmResetView,
     CustomPasswordResetView,
@@ -25,4 +26,5 @@ urlpatterns = [
         name='password_reset_confirm',
     ),
     path('activate/<uidb64>/<token>', activate, name='activate'),
+    path('contact', ContactView.as_view(), name='contact'),
 ]
