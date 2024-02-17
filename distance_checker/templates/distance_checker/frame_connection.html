@@ -2,7 +2,23 @@
 {% load crispy_forms_tags %}
 {% block title %}{{ title }}{% endblock title %}
 {% block content %}
+{% load static %}
+
 <h1>{{ connection_type }}</h1>
+
+{% if connection_type == 'Corner checker' %}
+<div>
+    <img class="rounded mx-auto d-block img-fluid" src="{% static 'images/corner.PNG' %}" alt="RHS"
+         width="500" height="500">
+</div>
+
+{% else %}
+<div>
+    <img class="rounded mx-auto d-block img-fluid" src="{% static 'images/girder.PNG' %}" alt="RHS"
+         width="500" height="500">
+</div>
+{% endif %}
+
 <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
@@ -61,5 +77,16 @@
     <img class="img-fluid rounded" src="data:image/png;base64,{{ image_data }}" alt="Connection graph"
          width="500" height="500">
     {% endif %}
+</div>
+
+<div class="border-top pt-3 mt-3">
+    Notes:
+    <ol>
+        <li>To save calculation in Database, User need to be logged</li>
+        <li>In the assumption, all bolts of grade 8.8 are calculated to have threads in shear plane. To determinate
+            proper length, if bolts thread need to be beyond connection plate, it is necessary tu use grade 10.9
+        </li>
+    </ol>
+
 </div>
 {% endblock content %}

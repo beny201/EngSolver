@@ -2,7 +2,13 @@
 {% load crispy_forms_tags %}
 {% block title %}{{ title }}{% endblock title %}
 {% block content %}
+{% load static %}
 <h1>{{ connection_type }}</h1>
+
+<div>
+    <img class="rounded mx-auto d-block img-fluid" src="{% static 'images/rhs.PNG' %}" alt="RHS"
+         width="250" height="250">
+</div>
 <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
@@ -86,5 +92,14 @@
     </ul>
 </div>
 {% endif %}
+
+<div class="border-top pt-3 mt-3">
+    Notes:
+    <ol>
+        <li>For detailed calculation, User need to be logged and save calculation to Database</li>
+        <li>Self weight of bar is added to My</li>
+    </ol>
+
+</div>
 
 {% endblock content %}
